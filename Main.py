@@ -7,16 +7,16 @@ prozor = pygame.display.set_mode((1000, 1000))
 
 # X = zid, O = vazduh, C = coin, S = sanduk (chest)
 mapa = [
-    "XXXXXXXXXX",
-    "XOOOOOOOOX",
-    "XXOOOOOOOX",
-    "XOOOOOXXXX",
-    "XOOOXXXOOX",
-    "XOOXXXOOOX",
-    "XOOOOXXXOX",
-    "XOOOOOOOOX",
-    "XOOOOOOOOX",
-    "XXXXXXXXXX",
+    "XXXXXXXXXXO",
+    "XOOOOOOOOXO",
+    "XXOOOOOOOXO",
+    "XOOOOOXXXXO",
+    "XOOOXXXOOXO",
+    "XOOXXXOOOXO",
+    "XOOOOXXXOXO",
+    "XOOOOOOOOXO",
+    "XOOOOOOOOXO",
+    "XXXXXXXXXXO",
 ]
 
 
@@ -40,6 +40,7 @@ StoneFloor = pygame.transform.scale(StoneFloor, (100, 100))
 Dirt = pygame.transform.scale(Dirt, (100, 100))
 Chest1 = pygame.transform.scale(Chest1, (100, 100))
 warrior = pygame.transform.scale(warrior, (100, 100))
+OpenedChest1 = pygame.transform.scale(OpenedChest1, (100, 100))
 
 
 def isPassable(
@@ -65,6 +66,7 @@ class Entity:
 
     def Draw(self):
         if self.type == "Chest":
+            # print("Did it prior")
             if self.opened == 0:
                 prozor.blit(Chest1, (self.x * 100, self.y * 100))
             if self.opened == 1:
@@ -96,8 +98,7 @@ class Player:
     def Activations(self):
         for i in range(len(entityList)):
             if self.x == entityList[i].x and self.y == entityList[i].y:
-                entityList[i].opened == 1
-                # print("DONE")
+                entityList[i].opened = 1
 
     def Update(self):
         self.Move()
@@ -131,6 +132,9 @@ class Player:
 
 player = Player()
 while True:
+    for event in pygame.event.get():
+        if event == pygame.QUIT:
+            exit()
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if mapa[i][j] == "X":
