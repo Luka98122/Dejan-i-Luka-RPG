@@ -1,10 +1,8 @@
-from cmath import e
-from re import S
 import pygame
-
+import sys
 
 prozor = pygame.display.set_mode((1000, 1000))
-
+movementCooldown = 1000
 # X = zid, O = vazduh, C = coin, S = sanduk (chest)
 mapa = [
     "XXXXXXXXXXO",
@@ -21,21 +19,11 @@ mapa = [
 
 
 # Texture
-Chest1 = pygame.image.load(
-    "C:\\Users\luka\\source\\repos\\Dejan-i-Luka-RPG\\Textures\\Chest1.png"
-)
-OpenedChest1 = pygame.image.load(
-    "C:\\Users\luka\\source\\repos\\Dejan-i-Luka-RPG\\Textures\\OpenedChest1.png"
-)
-Dirt = pygame.image.load(
-    "C:\\Users\luka\\source\\repos\\Dejan-i-Luka-RPG\\Textures\\Dirt.jpg"
-)
-StoneFloor = pygame.image.load(
-    "C:\\Users\luka\\source\\repos\\Dejan-i-Luka-RPG\\Textures\\StoneFloor.jpg"
-)
-warrior = pygame.image.load(
-    "C:\\Users\luka\\source\\repos\\Dejan-i-Luka-RPG\\Textures\\warrior.png"
-)
+Chest1 = pygame.image.load("Textures\Chest1.png")
+OpenedChest1 = pygame.image.load("Textures\OpenedChest1.png")
+Dirt = pygame.image.load("Textures\Dirt.jpg")
+StoneFloor = pygame.image.load("Textures\StoneFloor.jpg")
+warrior = pygame.image.load("Textures\warrior.png")
 StoneFloor = pygame.transform.scale(StoneFloor, (100, 100))
 Dirt = pygame.transform.scale(Dirt, (100, 100))
 Chest1 = pygame.transform.scale(Chest1, (100, 100))
@@ -88,53 +76,69 @@ createNewEntity(8, 1, "Chest")
 
 
 class Player:
-    x = 1
-    y = 1
-    dx = 5
-    dy = 5
-    speed = 0
+    pos = pygame.Vector2(1, 1)
+    speed = 5
     hp = 0
+    movementCooldown = 0
+    defaultCooldown = 50
 
     def Activations(self):
         for i in range(len(entityList)):
-            if self.x == entityList[i].x and self.y == entityList[i].y:
+            if self.pos.x == entityList[i].x and self.pos.y == entityList[i].y:
                 entityList[i].opened = 1
 
     def Update(self):
+        self.movementCooldown = self.movementCooldown - 1
         self.Move()
         self.Activations()
 
     def Draw(self):
-        # pygame.draw.rect(prozor,pygame.Color("Red"),pygame.Rect(self.x * 100, self.y * 100, 100, 100))
-        prozor.blit(warrior, (self.x * 100, self.y * 100))
+        # pygame.draw.rect(prozor,pygame.Color("Red"),pygame.Rect(self.pos.x * 100, self.pos.y * 100, 100, 100))
+        prozor.blit(warrior, (self.pos.x * 100, self.pos.y * 100))
 
-    def Move(self):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and isPassable(self.x, self.y - 1) == True:
-                    self.y = self.y - 1
-                if (
-                    event.key == pygame.K_DOWN
-                    and isPassable(self.x, self.y + 1) == True
-                ):
-                    self.y = self.y + 1
-                if (
-                    event.key == pygame.K_LEFT
-                    and isPassable(self.x - 1, self.y) == True
-                ):
-                    self.x = self.x - 1
-                if (
-                    event.key == pygame.K_RIGHT
-                    and isPassable(self.x + 1, self.y) == True
-                ):
-                    self.x = self.x + 1
+    def Move(
+        self,
+    ):
+        if self.movementCooldown < 0:
+            keys = pygame.key.get_pressed()
+            if (
+                keys[pygame.K_UP]
+                and isPassable(int(self.pos.x), int(self.pos.y - 1)) == True
+            ):
+                self.pos.y = self.pos.y - 1
+                self.movementCooldown = self.defaultCooldown
+            if (
+                keys[pygame.K_DOWN]
+                and isPassable(int(self.pos.x), int(self.pos.y + 1)) == True
+            ):
+                self.pos.y = self.pos.y + 1
+                self.movementCooldown = self.defaultCooldown
+            if (
+                keys[pygame.K_LEFT]
+                and isPassable(int(self.pos.x - 1), int(self.pos.y)) == True
+            ):
+                self.pos.x = self.pos.x - 1
+                self.movementCooldown = self.defaultCooldown
+            if (
+                keys[pygame.K_RIGHT]
+                and isPassable(int(self.pos.x + 1), int(self.pos.y)) == True
+            ):
+                self.pos.x = self.pos.x + 1
+                self.movementCooldown = self.defaultCooldown
 
 
 player = Player()
 while True:
     for event in pygame.event.get():
         if event == pygame.QUIT:
-            exit()
+            pygame.display.quit()
+            pygame.quit()
+            sys.exit()
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:
+        sys.exit()
+
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if mapa[i][j] == "X":
@@ -144,7 +148,6 @@ while True:
             if mapa[i][j] == "OS":
                 prozor.blit(Dirt, (j * 100, i * 100))
                 prozor.blit(Chest1, (j * 100, i * 100))
-
     for i in range(len(entityList)):
         entityList[i].Update()
         entityList[i].Draw()
