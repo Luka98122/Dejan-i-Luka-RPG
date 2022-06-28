@@ -1,12 +1,15 @@
+from turtle import Screen, screensize
 import pygame
 import sys
 
 cameraOffset = pygame.Vector2(0, 0)
-prozor = pygame.display.set_mode((1000, 1000))
+prozor = pygame.display.set_mode((1000, 1000))  # , pygame.FULLSCREEN)
 movementCooldown = 50
+
 latestMove = pygame.Vector2(0, 0)
-# X = zid, O = vazduh, C = coin, S = sand, W = water
+# X = zid, O = vazduh, C = coin, S = sand, W = water, D = door
 mapa = [
+    # 123456789012345678901234567890123456789012345678901234567890123456789
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
@@ -20,12 +23,12 @@ mapa = [
     "OOOOOOOOOOOOOOOOOOOOOOSSSOOOOSSSSSSSWWWWWWWWWWSSSSWWWWSSSSSOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOSSSSSSSSSSWWWWWWWWWWWWWWWWWWWWWSSSOOOOOOOOOOO",
     "OOOOOOOOOOOOXXXXXXXXXXXXOOOOOOSSSWWWWWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOO",
-    "OOOOOOOOOOOOOOOOOOOOOOOXOOOOOOOSSSSSWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOOO",
+    "OOOOOOOOOOOOXOOOOOOOOOOXOOOOOOOSSSSSWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOOO",
     "OOOOOOOOOOOOXOOOOOOOOOOXOOOOOOSSSWWWWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOOO",
     "OOOOOOOOOOOOXXXXOOOOOOOXOOOOOOOOSSSSSSSWWWWWWWWWWWWWWWSSOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOXOOOOOOOXOOOOOOOOOOOOSSSSSWWWWWWWSSSSSSSOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOXOOOOOOOXOOOOOOOOOOOOOOOSSSSSSSSSSSSSSSOOOOOOOOOOOOOOO",
-    "OOOOOOOOOOOOOOOXXXXXXXXXOOOOOOOOOOOOOOOOOSSSSSSSSOOOOOOOOOOOOOOOOOOOO",
+    "OOOOOOOOOOOOOOOXXOXXXXXXOOOOOOOOOOOOOOOOOSSSSSSSSOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
@@ -77,61 +80,101 @@ def isPassable(
 
 ##### Entities (chests, enemies, missiles)
 class Entity:
-    pos = pygame.Vector2(0, 0)
-    type = 0
-    opened = 0
+    def __init__(self, pos) -> None:
+        self.pos = pos
+        self.type = 0
 
     def Update(self):
-        0 == 0
+        pass
 
     def Draw(self):
-        if self.type == "Chest":
-            # print("Did it prior")
-            if self.opened == 0:
-                prozor.blit(
-                    Chest1,
-                    (
-                        j * 100 - int(cameraOffset.x) * 100,
-                        i * 100 - int(cameraOffset.y) * 100,
-                    ),
-                )
-            if self.opened == 1:
-                prozor.blit(
-                    OpenedChest1,
-                    (
-                        j * 100 - int(cameraOffset.x) * 100,
-                        i * 100 - int(cameraOffset.y) * 100,
-                    ),
-                )
+        pass
+
+
+class Chest(Entity):
+    def __init__(self, x, y) -> None:
+        pos = pygame.Vector2(x, y)
+        super().__init__(pos)
+        self.opened = 0
+
+    def Draw(self):
+        #        return super().Draw()
+        # print("Did it prior")
+        if self.opened == 0:
+            prozor.blit(
+                Chest1,
+                (
+                    self.pos.x * 100 - int(cameraOffset.x) * 100,
+                    self.pos.y * 100 - int(cameraOffset.y) * 100,
+                ),
+            )
+        if self.opened == 1:
+            prozor.blit(
+                OpenedChest1,
+                (
+                    self.pos.x * 100 - int(cameraOffset.x) * 100,
+                    self.pos.y * 100 - int(cameraOffset.y) * 100,
+                ),
+            )
 
 
 entityList = []
 
 
-def createNewEntity(x, y, type):
-    entity = Entity()
-    entity.pos.x = x
-    entity.pos.y = y
-    entity.type = type
+def addEntity(entity):
     entityList.append(entity)
 
 
-createNewEntity(8, 1, "Chest")
+for i in range(len(entityList)):
+    print(entityList[i].pos, entityList[i].type)
+
+
+class Door(Entity):
+    def __init__(self, x, y) -> None:
+        pos = pygame.Vector2(x, y)
+        super().__init__(pos)
+        self.opened = 0
+
+    def Draw(self):
+        if self.opened == 0:
+            prozor.blit(
+                ClosedDoor,
+                (
+                    self.pos.x * 100 - int(cameraOffset.x) * 100,
+                    self.pos.y * 100 - int(cameraOffset.y) * 100,
+                ),
+            )
+        if self.opened == 1:
+            prozor.blit(
+                OpenedDoor,
+                (
+                    self.pos.x * 100 - int(cameraOffset.x) * 100,
+                    self.pos.y * 100 - int(cameraOffset.y) * 100,
+                ),
+            )
+
+
+# =========================ENTITIES========================#
+addEntity(Chest(2, 1))
+addEntity(Door(17, 18))
+addEntity(Chest(15, 14))
+addEntity(Chest(33, 11))
 
 
 class Player:
-    startx = 5
-    starty = 5
+    startx = 4
+    starty = 4
     pos = pygame.Vector2(startx, starty)
     speed = 5
     hp = 0
     movementCooldown = 0
-    defaultCooldown = 25
+    defaultCooldown = 15
 
     def Activations(self):
         for i in range(len(entityList)):
             if self.pos.x == entityList[i].pos.x and self.pos.y == entityList[i].pos.y:
                 entityList[i].opened = 1
+                # print("STEPPED")
 
     def Update(self):
         self.movementCooldown = self.movementCooldown - 1
@@ -156,6 +199,7 @@ class Player:
                 self.pos.y = self.pos.y - 1
                 self.movementCooldown = self.defaultCooldown
                 cameraOffset.y -= 1
+                print(self.pos)
             if (
                 keys[pygame.K_DOWN]
                 and isPassable(int(self.pos.x), int(self.pos.y + 1)) == True
@@ -163,6 +207,7 @@ class Player:
                 self.pos.y = self.pos.y + 1
                 self.movementCooldown = self.defaultCooldown
                 cameraOffset.y += 1
+                print(self.pos)
             if (
                 keys[pygame.K_LEFT]
                 and isPassable(int(self.pos.x - 1), int(self.pos.y)) == True
@@ -170,6 +215,7 @@ class Player:
                 self.pos.x = self.pos.x - 1
                 self.movementCooldown = self.defaultCooldown
                 cameraOffset.x -= 1
+                print(self.pos)
             if (
                 keys[pygame.K_RIGHT]
                 and isPassable(int(self.pos.x + 1), int(self.pos.y)) == True
@@ -177,6 +223,7 @@ class Player:
                 self.pos.x = self.pos.x + 1
                 self.movementCooldown = self.defaultCooldown
                 cameraOffset.x += 1
+                print(self.pos)
 
 
 player = Player()
