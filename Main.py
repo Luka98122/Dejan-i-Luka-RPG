@@ -45,31 +45,25 @@ mapa = [
 ]
 
 
-# Texture
-# ====================LOAD=======================#
-Chest1 = pygame.image.load("Textures\Chest1.png")
-OpenedChest1 = pygame.image.load("Textures\OpenedChest1.png")
-Dirt = pygame.image.load("Textures\Dirt.jpg")
-StoneFloor = pygame.image.load("Textures\StoneFloor.jpg")
-warrior = pygame.image.load("Textures\warrior.png")
-water1 = pygame.image.load("Textures\Water1.png")
-sand = pygame.image.load("Textures\sand.png")
-ClosedDoor = pygame.image.load("Textures\ClosedDoor.png")
-OpenedDoor = pygame.image.load("Textures\OpenedDoor1.png")
-WoodFloor = pygame.image.load("Textures\WoodFloor.png")
-StartButton = pygame.image.load("Textures\StartButton.png")
+def imgSetup(str1):
+    stringy = "Textures\\" + str1
+    img = pygame.image.load(stringy)
+    img = pygame.transform.scale(img, (100, 100))
+    return img
+
+
+Chest1 = imgSetup("Chest1.png")
+OpenedChest1 = imgSetup("OpenedChest1.png")
+Dirt = imgSetup("Dirt.jpg")
+StoneFloor = imgSetup("StoneFloor.jpg")
+warrior = imgSetup("warrior.png")
+water1 = imgSetup("Water1.png")
+sand = imgSetup("sand.png")
+WoodFloor = imgSetup("WoodFloor.png")
+
+
 Village = pygame.image.load("Textures\Village.png")
-# =====================SCALE=====================#
-StoneFloor = pygame.transform.scale(StoneFloor, (100, 100))
-Dirt = pygame.transform.scale(Dirt, (100, 100))
-Chest1 = pygame.transform.scale(Chest1, (100, 100))
-warrior = pygame.transform.scale(warrior, (100, 100))
-OpenedChest1 = pygame.transform.scale(OpenedChest1, (100, 100))
-water1 = pygame.transform.scale(water1, (100, 100))
-sand = pygame.transform.scale(sand, (100, 100))
-ClosedDoor = pygame.transform.scale(ClosedDoor, (100, 100))
-OpenedDoor = pygame.transform.scale(OpenedDoor, (100, 100))
-WoodFloor = pygame.transform.scale(WoodFloor, (100, 100))
+StartButton = pygame.image.load("Textures\StartButton.png")
 
 
 def isPassable(
@@ -121,24 +115,10 @@ class Chest(Entity):
         self.opened = 0
 
     def Draw(self):
-        #        return super().Draw()
-        # print("Did it prior")
-        if self.opened == 0:
-            prozor.blit(
-                Chest1,
-                (
-                    self.pos.x * 100 - int(cameraOffset.x) * 100,
-                    self.pos.y * 100 - int(cameraOffset.y) * 100,
-                ),
-            )
+        slika = Chest1
         if self.opened == 1:
-            prozor.blit(
-                OpenedChest1,
-                (
-                    self.pos.x * 100 - int(cameraOffset.x) * 100,
-                    self.pos.y * 100 - int(cameraOffset.y) * 100,
-                ),
-            )
+            slika = OpenedChest1
+        return super().Draw(slika)
 
 
 entityList = []
@@ -153,29 +133,19 @@ for i in range(len(entityList)):
 
 
 class Door(Entity):
+    ClosedDoor = imgSetup("ClosedDoor.png")
+    OpenedDoor = imgSetup("OpenedDoor.png")
+
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
         super().__init__(pos)
         self.opened = 0
 
     def Draw(self):
-        # return super.draw()
-        if self.opened == 0:
-            prozor.blit(
-                ClosedDoor,
-                (
-                    self.pos.x * 100 - int(cameraOffset.x) * 100,
-                    self.pos.y * 100 - int(cameraOffset.y) * 100,
-                ),
-            )
+        slika = self.ClosedDoor
         if self.opened == 1:
-            prozor.blit(
-                OpenedDoor,
-                (
-                    self.pos.x * 100 - int(cameraOffset.x) * 100,
-                    self.pos.y * 100 - int(cameraOffset.y) * 100,
-                ),
-            )
+            slika = self.OpenedDoor
+        return super().Draw(slika)
 
 
 # =========================ENTITIES========================#
