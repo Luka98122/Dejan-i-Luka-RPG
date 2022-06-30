@@ -4,12 +4,12 @@ import pygame
 import sys
 
 cameraOffset = pygame.Vector2(0, 0)
-prozor = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
+window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 50
 
 latestMove = pygame.Vector2(0, 0)
 # X = zid, O = vazduh, C = coin, S = sand, W = water, D = door
-mapa = [
+gridMap = [
     # 012345678901234567890123456789012345678901234567890123456789012345678
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
@@ -29,7 +29,7 @@ mapa = [
     "OOOOOOOOOOOOXXXXFFFFFFFXOOOOOOOOSSSSSSSWWWWWWWWWWWWWWWSSOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOXFFFFFFFXOOOOOOOOOOOOSSSSSWWWWWWWSSSSSSSOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOXFFFFFFFXOOOOOOOOOOOOOOOSSSSSSSSSSSSSSSOOOOOOOOOOOOOOO",
-    "OOOOOOOOOOOOOOOXXOXXXXXXOOOOOOOOOOOOOOOOOSSSSSSSSOOOOOOOOOOOOOOOOOOOO",
+    "OOOOOOOOOOOOOOOXXFXXXXXXOOOOOOOOOOOOOOOOOSSSSSSSSOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
@@ -56,7 +56,6 @@ Chest1 = imgSetup("Chest1.png")
 OpenedChest1 = imgSetup("OpenedChest1.png")
 Dirt = imgSetup("Dirt.jpg")
 StoneFloor = imgSetup("StoneFloor.jpg")
-warrior = imgSetup("warrior.png")
 water1 = imgSetup("Water1.png")
 sand = imgSetup("sand.png")
 WoodFloor = imgSetup("WoodFloor.png")
@@ -71,7 +70,7 @@ def isPassable(
     y,
 ):
     # Prvo y pa x, jer prvo nadjemo visinu, i onda idemo kroz red, ovo nije bug
-    if mapa[y][x] != "X" and mapa[y][x] != "W":
+    if gridMap[y][x] != "X" and gridMap[y][x] != "W":
         return True
     else:
         return False
@@ -82,18 +81,59 @@ class Entity:
     def __init__(self, pos) -> None:
         self.pos = pos
         self.type = 0
+        self.interacted = 0
+        self.hp = 0
 
     def Update(self):
         pass
 
     def Draw(self, picture):
-        prozor.blit(
+        window.blit(
             picture,
             (
                 self.pos.x * 100 - int(cameraOffset.x) * 100,
                 self.pos.y * 100 - int(cameraOffset.y) * 100,
             ),
         )
+
+    def takeDamage(self, damage):
+        self.hp -= damage
+
+
+class Trap(Entity):
+    explosiveBarrel = imgSetup("ExplosiveBarrel.png")
+    oilSpill = imgSetup("OilSpill.png")
+    type = "trap"
+
+    def __init__(self, x, y) -> None:
+        pos = pygame.Vector2(x, y)
+        super().__init__(pos)
+        self.damage = 20
+        self.interacted = 0
+        self.type = "trap"
+
+    def Activate(self):
+        for i in range(len(entityList)):
+            if (
+                self.pos.x == entityList[i].pos.x
+                and self.pos.y == entityList[i].pos.y
+                and self.interacted == 0
+                and entityList[i].type != "trap"
+            ):
+                self.interacted = 1
+                entityList[i].takeDamage(self.damage)
+                print(player.hp)
+
+    def Update(self):
+        print(player.pos, self.pos, self.interacted)
+        self.Activate()
+        return super().Update()
+
+    def Draw(self):
+        picture = self.explosiveBarrel
+        if self.interacted == 1:
+            picture = self.oilSpill
+        return super().Draw(picture)
 
 
 class Button:
@@ -102,7 +142,7 @@ class Button:
         self.pos = pos
 
     def draw(self):
-        prozor.blit(self.picture, self.pos)
+        window.blit(self.picture, self.pos)
 
 
 Play_Button = Button(StartButton, (275, 210))
@@ -112,13 +152,13 @@ class Chest(Entity):
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
         super().__init__(pos)
-        self.opened = 0
+        self.interacted = 0
 
     def Draw(self):
-        slika = Chest1
-        if self.opened == 1:
-            slika = OpenedChest1
-        return super().Draw(slika)
+        picture = Chest1
+        if self.interacted == 1:
+            picture = OpenedChest1
+        return super().Draw(picture)
 
 
 entityList = []
@@ -139,11 +179,11 @@ class Door(Entity):
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
         super().__init__(pos)
-        self.opened = 0
+        self.interacted = 0
 
     def Draw(self):
         slika = self.ClosedDoor
-        if self.opened == 1:
+        if self.interacted == 1:
             slika = self.OpenedDoor
         return super().Draw(slika)
 
@@ -153,32 +193,39 @@ addEntity(Chest(2, 1))
 addEntity(Door(17, 18))
 addEntity(Chest(15, 14))
 addEntity(Chest(33, 11))
+addEntity(Trap(8, 5))
 
 
-class Player:
+class Player(Entity):
     startx = 4
     starty = 4
     pos = pygame.Vector2(startx, starty)
     speed = 5
-    hp = 0
+    hp = 100
     movementCooldown = 0
     defaultCooldown = 15
+    warrior = imgSetup("warrior.png")
+    type = "player"
 
     def Activations(self):
         for i in range(len(entityList)):
-            if self.pos.x == entityList[i].pos.x and self.pos.y == entityList[i].pos.y:
-                entityList[i].opened = 1
-                print(entityList[i].opened)
+            if (
+                self.pos.x == entityList[i].pos.x
+                and self.pos.y == entityList[i].pos.y
+                and entityList[i].type != "trap"
+            ):
+                entityList[i].interacted = 1
+                # print(entityList[i].interacted)
                 # entityList[i].Draw()
 
     def Update(self):
         self.movementCooldown = self.movementCooldown - 1
         self.Move()
-        self.Activations()
+        # self.Activations()
 
     def Draw(self):
-        # pygame.draw.rect(prozor,pygame.Color("Red"),pygame.Rect(self.pos.x * 100, self.pos.y * 100, 100, 100))
-        prozor.blit(warrior, (self.startx * 100, self.starty * 100))
+        picture = self.warrior
+        return super().Draw(picture)
 
     def Move(
         self,
@@ -220,8 +267,30 @@ class Player:
                 cameraOffset.x += 1
                 print(self.pos)
 
+    def takeDamage(self, damage):
+        return super().takeDamage(damage)
 
-player = Player()
+
+player = Player(pygame.Vector2(Player.startx, Player.starty))
+entityList.append(player)
+
+
+class Hud:
+    heart = pygame.image.load("Textures\Heart.png")
+    heart = pygame.transform.scale(heart, (50, 50))
+
+    def __init__(self) -> None:
+        pass
+
+    def Draw(self):
+        for i in range(player.hp // 10):
+            window.blit(self.heart, (i * 50, 0))
+
+    def update(self):
+        pass
+
+
+hud = Hud()
 
 
 def main_menu():
@@ -238,7 +307,7 @@ def main_menu():
                 ):
                     play()
 
-        prozor.blit(Village, (0, 0))
+        window.blit(Village, (0, 0))
         Play_Button.draw()
 
         pygame.display.flip()
@@ -255,9 +324,12 @@ def pause():
             if dogadjaj.type == pygame.KEYDOWN:
                 if dogadjaj.key == pygame.K_p:
                     return
-        prozor.fill((255, 0, 0))
+        window.fill((255, 0, 0))
 
     pygame.quit()
+
+
+player.hp = 100
 
 
 def play():
@@ -276,20 +348,20 @@ def play():
             sys.exit()
         if keys[pygame.K_p]:
             pause()
-        for i in range(len(mapa)):
-            for j in range(len(mapa[0])):
+        for i in range(len(gridMap)):
+            for j in range(len(gridMap[0])):
                 slika = 0
-                if mapa[i][j] == "S":
+                if gridMap[i][j] == "S":
                     slika = sand
-                if mapa[i][j] == "O":
+                if gridMap[i][j] == "O":
                     slika = Dirt
-                if mapa[i][j] == "W":
+                if gridMap[i][j] == "W":
                     slika = water1
-                if mapa[i][j] == "X":
+                if gridMap[i][j] == "X":
                     slika = StoneFloor
-                if mapa[i][j] == "F":
+                if gridMap[i][j] == "F":
                     slika = WoodFloor
-                prozor.blit(
+                window.blit(
                     slika,
                     (
                         j * 100 - int(cameraOffset.x) * 100,
@@ -301,8 +373,9 @@ def play():
             entityList[i].Draw()
         player.Update()
         player.Draw()
+        hud.Draw()
         pygame.display.flip()
-        prozor.fill(pygame.Color("blue"))
+        window.fill(pygame.Color("blue"))
 
 
 main_menu()
