@@ -1,12 +1,14 @@
+from glob import glob
 from turtle import Screen, screensize
 import py
 import pygame
 import sys
 
+deathCooldown = 50
 cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 50
-
+entityList = []
 latestMove = pygame.Vector2(0, 0)
 # X = zid, O = vazduh, C = coin, S = sand, W = water, D = door
 gridMap = [
@@ -85,7 +87,19 @@ class Entity:
         self.hp = 0
 
     def Update(self):
-        pass
+        self.Activate()
+
+    def Activate(self):
+        for i in range(len(entityList)):
+            if (
+                self.pos.x == entityList[i].pos.x
+                and self.pos.y == entityList[i].pos.y
+                and self.interacted == 0
+                and entityList[i].type != self.type
+            ):
+                self.interacted = 1
+                if self.type == "trap":
+                    entityList[i].takeDamage(self.damage)
 
     def Draw(self, picture):
         window.blit(
@@ -113,19 +127,9 @@ class Trap(Entity):
         self.type = "trap"
 
     def Activate(self):
-        for i in range(len(entityList)):
-            if (
-                self.pos.x == entityList[i].pos.x
-                and self.pos.y == entityList[i].pos.y
-                and self.interacted == 0
-                and entityList[i].type != "trap"
-            ):
-                self.interacted = 1
-                entityList[i].takeDamage(self.damage)
-                print(player.hp)
+        return super().Activate()
 
     def Update(self):
-        print(player.pos, self.pos, self.interacted)
         self.Activate()
         return super().Update()
 
@@ -153,15 +157,19 @@ class Chest(Entity):
         pos = pygame.Vector2(x, y)
         super().__init__(pos)
         self.interacted = 0
+        self.type = "chest"
+
+    def Activate(self):
+        return super().Activate()
+
+    def Update(self):
+        return super().Update()
 
     def Draw(self):
         picture = Chest1
         if self.interacted == 1:
             picture = OpenedChest1
         return super().Draw(picture)
-
-
-entityList = []
 
 
 def addEntity(entity):
@@ -194,6 +202,11 @@ addEntity(Door(17, 18))
 addEntity(Chest(15, 14))
 addEntity(Chest(33, 11))
 addEntity(Trap(8, 5))
+addEntity(Trap(13, 20))
+
+addEntity(Trap(14, 21))
+addEntity(Trap(15, 25))
+addEntity(Trap(8, 20))
 
 
 class Player(Entity):
@@ -206,6 +219,10 @@ class Player(Entity):
     defaultCooldown = 15
     warrior = imgSetup("warrior.png")
     type = "player"
+
+    def __init__(self, pos) -> None:
+        super().__init__(pos)
+        self.type = "player"
 
     def Activations(self):
         for i in range(len(entityList)):
@@ -221,7 +238,6 @@ class Player(Entity):
     def Update(self):
         self.movementCooldown = self.movementCooldown - 1
         self.Move()
-        # self.Activations()
 
     def Draw(self):
         picture = self.warrior
@@ -333,6 +349,7 @@ player.hp = 100
 
 
 def play():
+    global deathCooldown
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -374,7 +391,12 @@ def play():
         player.Update()
         player.Draw()
         hud.Draw()
+        if player.hp <= 0:
+            deathCooldown -= 1
         pygame.display.flip()
+        if deathCooldown <= 0:
+            pygame.quit()
+            sys.exit()
         window.fill(pygame.Color("blue"))
 
 
