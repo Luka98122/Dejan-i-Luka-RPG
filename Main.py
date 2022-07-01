@@ -1,13 +1,10 @@
-from glob import glob
-from turtle import Screen, screensize
-import py
 import pygame
 import sys
 
-deathCooldown = 50
+deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
-movementCooldown = 50
+movementCooldown = 0
 entityList = []
 latestMove = pygame.Vector2(0, 0)
 # X = zid, O = vazduh, C = coin, S = sand, W = water, D = door
@@ -78,6 +75,36 @@ def isPassable(
         return False
 
 
+#### Items
+class Item:
+    def __init__(self) -> None:
+        self.uses = 1
+
+    def Update(self):
+        pass
+
+    def Draw(self):
+        pass
+
+
+class HealthPotion(Item):
+    def __init__(self, heal):
+        # super().__init__()
+        self.uses = 1
+        self.heal = heal
+        self.type = "HealthPotion"
+
+    def Update(self):
+        super().Update()
+        if self.uses > 0:
+            player.takeDamage(-self.heal)
+
+    def Draw(self):
+        super().Draw()
+
+
+h1 = HealthPotion(20)
+inventory = [[h1, 1]]
 ##### Entities (chests, enemies, missiles)
 class Entity:
     def __init__(self, pos) -> None:
@@ -151,7 +178,7 @@ class Button:
 
 Play_Button = Button(StartButton, (275, 210))
 
-
+# =========================CHEST===========================#
 class Chest(Entity):
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
@@ -172,12 +199,16 @@ class Chest(Entity):
         return super().Draw(picture)
 
 
+# =========================CHEST===========================#
+
+
 def addEntity(entity):
     entityList.append(entity)
 
 
 for i in range(len(entityList)):
     print(entityList[i].pos, entityList[i].type)
+# =========================DOOR============================#
 
 
 class Door(Entity):
@@ -196,6 +227,8 @@ class Door(Entity):
         return super().Draw(slika)
 
 
+# =========================DOOR============================#
+
 # =========================ENTITIES========================#
 addEntity(Chest(2, 1))
 addEntity(Door(17, 18))
@@ -204,11 +237,15 @@ addEntity(Chest(33, 11))
 addEntity(Trap(8, 5))
 addEntity(Trap(13, 20))
 
-addEntity(Trap(14, 21))
-addEntity(Trap(15, 25))
-addEntity(Trap(8, 20))
+addEntity(Trap(1, 5))
+addEntity(Trap(2, 5))
+addEntity(Trap(3, 5))
+addEntity(Trap(4, 5))
+addEntity(Trap(5, 5))
+# =========================ENTITIES========================#
 
 
+# =========================PLAYER==========================#
 class Player(Entity):
     startx = 4
     starty = 4
@@ -218,11 +255,15 @@ class Player(Entity):
     movementCooldown = 0
     defaultCooldown = 15
     warrior = imgSetup("warrior.png")
+    bloodPool = imgSetup("BloodPool.png")
     type = "player"
 
     def __init__(self, pos) -> None:
         super().__init__(pos)
         self.type = "player"
+
+    def Heal(self, amount):
+        self.hp = self.hp + amount
 
     def Activations(self):
         for i in range(len(entityList)):
@@ -235,12 +276,24 @@ class Player(Entity):
                 # print(entityList[i].interacted)
                 # entityList[i].Draw()
 
+    def useInventory(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_r]:
+            if inventory[0][0].uses >= 1:
+                if inventory[0][0].type == "HealthPotion" and inventory[0][0].uses > 0:
+                    self.Heal(inventory[0][0].heal)
+                    inventory[0][0].uses -= 1
+
     def Update(self):
-        self.movementCooldown = self.movementCooldown - 1
-        self.Move()
+        if self.hp > 0:
+            self.movementCooldown = self.movementCooldown - 1
+            self.Move()
+            self.useInventory()
 
     def Draw(self):
         picture = self.warrior
+        if self.hp <= 0:
+            picture = self.bloodPool
         return super().Draw(picture)
 
     def Move(
@@ -251,7 +304,7 @@ class Player(Entity):
         if self.movementCooldown < 0:
             keys = pygame.key.get_pressed()
             if (
-                keys[pygame.K_UP]
+                keys[pygame.K_w]
                 and isPassable(int(self.pos.x), int(self.pos.y - 1)) == True
             ):
                 self.pos.y = self.pos.y - 1
@@ -259,7 +312,7 @@ class Player(Entity):
                 cameraOffset.y -= 1
                 print(self.pos)
             if (
-                keys[pygame.K_DOWN]
+                keys[pygame.K_s]
                 and isPassable(int(self.pos.x), int(self.pos.y + 1)) == True
             ):
                 self.pos.y = self.pos.y + 1
@@ -267,7 +320,7 @@ class Player(Entity):
                 cameraOffset.y += 1
                 print(self.pos)
             if (
-                keys[pygame.K_LEFT]
+                keys[pygame.K_a]
                 and isPassable(int(self.pos.x - 1), int(self.pos.y)) == True
             ):
                 self.pos.x = self.pos.x - 1
@@ -275,7 +328,7 @@ class Player(Entity):
                 cameraOffset.x -= 1
                 print(self.pos)
             if (
-                keys[pygame.K_RIGHT]
+                keys[pygame.K_d]
                 and isPassable(int(self.pos.x + 1), int(self.pos.y)) == True
             ):
                 self.pos.x = self.pos.x + 1
@@ -289,11 +342,15 @@ class Player(Entity):
 
 player = Player(pygame.Vector2(Player.startx, Player.starty))
 entityList.append(player)
+# =========================PLAYER==========================#
 
 
+# =========================HUD=============================#
 class Hud:
     heart = pygame.image.load("Textures\Heart.png")
     heart = pygame.transform.scale(heart, (50, 50))
+    quickUseSlots = pygame.image.load("Textures\quickUseSlots.png")
+    quickUseSlots = pygame.transform.scale(quickUseSlots, (220, 64))
 
     def __init__(self) -> None:
         pass
@@ -301,12 +358,14 @@ class Hud:
     def Draw(self):
         for i in range(player.hp // 10):
             window.blit(self.heart, (i * 50, 0))
+        window.blit(self.quickUseSlots, (0, 500))
 
     def update(self):
         pass
 
 
 hud = Hud()
+# =========================HUD=============================#
 
 
 def main_menu():
@@ -388,7 +447,8 @@ def play():
         for i in range(len(entityList)):
             entityList[i].Update()
             entityList[i].Draw()
-        player.Update()
+        if player.hp >= 1:
+            player.Update()
         player.Draw()
         hud.Draw()
         if player.hp <= 0:
