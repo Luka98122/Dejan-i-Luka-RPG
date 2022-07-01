@@ -88,6 +88,10 @@ class Item:
 
 
 class HealthPotion(Item):
+    healthPot = pygame.image.load("Textures\healthPotion.png")
+    healthPot = pygame.transform.scale(healthPot, (75, 75))
+    picture = healthPot
+
     def __init__(self, heal):
         # super().__init__()
         self.uses = 1
@@ -103,8 +107,7 @@ class HealthPotion(Item):
         super().Draw()
 
 
-h1 = HealthPotion(20)
-inventory = [[h1, 1]]
+inventory = [[HealthPotion(20), 1], [HealthPotion(20), 1], [HealthPotion(20), 1]]
 ##### Entities (chests, enemies, missiles)
 class Entity:
     def __init__(self, pos) -> None:
@@ -283,6 +286,16 @@ class Player(Entity):
                 if inventory[0][0].type == "HealthPotion" and inventory[0][0].uses > 0:
                     self.Heal(inventory[0][0].heal)
                     inventory[0][0].uses -= 1
+        if keys[pygame.K_t]:
+            if inventory[1][0].uses >= 1:
+                if inventory[1][0].type == "HealthPotion" and inventory[1][0].uses > 0:
+                    self.Heal(inventory[1][0].heal)
+                    inventory[1][0].uses -= 1
+        if keys[pygame.K_y]:
+            if inventory[2][0].uses >= 1:
+                if inventory[2][0].type == "HealthPotion" and inventory[2][0].uses > 0:
+                    self.Heal(inventory[2][0].heal)
+                    inventory[2][0].uses -= 1
 
     def Update(self):
         if self.hp > 0:
@@ -358,7 +371,10 @@ class Hud:
     def Draw(self):
         for i in range(player.hp // 10):
             window.blit(self.heart, (i * 50, 0))
-        window.blit(self.quickUseSlots, (0, 500))
+        window.blit(self.quickUseSlots, (0, 525))
+        for i in range(3):
+            if inventory[i][0].uses > 0:
+                window.blit(inventory[i][0].picture, (5 + i * 65, 520))
 
     def update(self):
         pass
