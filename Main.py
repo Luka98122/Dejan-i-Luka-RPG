@@ -1,3 +1,4 @@
+from audioop import add
 from turtle import position
 import pygame
 import sys
@@ -146,7 +147,7 @@ class HealthPotion(Item):
 
     def __init__(self, heal):
         # super().__init__()
-        self.uses = 2
+        self.uses = 1
         self.heal = heal
         self.type = "HealthPotion"
 
@@ -159,7 +160,7 @@ class HealthPotion(Item):
         super().Draw()
 
 
-inventory = [[HealthPotion(20), 1], [HealthPotion(20), 1], [HealthPotion(20), 1]]
+inventory = [[HealthPotion(10), 1], [HealthPotion(10), 1], [HealthPotion(10), 1]]
 ##### Entities (chests, enemies, missiles)
 class Entity:
     def __init__(self, pos) -> None:
@@ -182,8 +183,8 @@ class Entity:
                 self.interacted = 1
                 if self.type == "trap":
                     entityList[i].takeDamage(self.damage)
-                if self.type == "ches":
-                    inventory.append(HealthPotion(10))
+                if self.type == "chest":
+                    inventory.append([HealthPotion(10), 1])
 
     def Draw(self, picture):
         window.blit(
@@ -333,6 +334,23 @@ class Player(Entity):
     def Heal(self, amount):
         self.hp = self.hp + amount
 
+    def spell1(self):
+        mousePos = pygame.mouse.get_pos()
+
+        mousePos[0] = mousePos[0] // 100 * 100
+        mousePos[1] = mousePos[1] // 100 * 100
+
+        window.blit(
+            Door.OpenedDoor,
+            (
+                mousePos[0] // 100 * 100,
+                mousePos[1] // 100 * 100,
+            ),
+        )
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                addEntity(Trap())
+
     def Activations(self):
         for i in range(len(entityList)):
             if (
@@ -349,28 +367,29 @@ class Player(Entity):
         keys = pygame.key.get_pressed()
         # print(keys[48])
         self.potionCooldown -= 1
-        for i in range(len(inventory)):
-            i = realI
-            if keys[49 + i]:
-                if inventory[i][0].uses >= 1:
-                    if (
-                        inventory[i][0].type == "HealthPotion"
-                        and inventory[i][0].uses > 0
-                        and self.potionCooldown <= 0
-                    ):
-                        self.Heal(inventory[0][0].heal)
-                        inventory[i][0].uses -= 1
-                        self.potionCooldown = 100
-            if inventory[i][0].uses == 0:
-                del inventory[i]
-                realI = i - 1
-            realI += 1
+        if len(inventory) == 0:
+            return
+        if inventory[-1][0].uses == 0:
+            del inventory[-1]
+        if len(inventory) == 0:
+            return
+        if keys[pygame.K_r]:
+            if inventory[-1][0].uses >= 1:
+                if (
+                    inventory[-1][0].type == "HealthPotion"
+                    and inventory[-1][0].uses > 0
+                    and self.potionCooldown <= 0
+                ):
+                    self.Heal(inventory[-1][0].heal)
+                    inventory[-1][0].uses -= 1
+                    self.potionCooldown = 100
 
     def Update(self):
         if self.hp > 0:
             self.movementCooldown = self.movementCooldown - 1
             self.Move()
             self.useInventory()
+            # self.spell1()
 
     def Draw(self):
         picture = self.warrior
@@ -508,9 +527,13 @@ def play():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             sys.exit()
+        score = 0
+        for i in range(len(entityList)):
+            if entityList[i].type == "chest" and entityList[i].interacted == 1:
+                score += 1
         if keys[pygame.K_p]:
             pause()
-        if keys[pygame.K_m]:
+        if keys[pygame.K_m] and score == 3:
             currentMap = 2
             player.pos.x = 0
             player.pos.y = 19
