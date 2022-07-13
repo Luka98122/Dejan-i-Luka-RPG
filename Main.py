@@ -340,13 +340,13 @@ class Player(Entity):
         mousePos[0] = mousePos[0] // 100 * 100
         mousePos[1] = mousePos[1] // 100 * 100
 
-        window.blit(
-            Door.OpenedDoor,
-            (
-                mousePos[0] // 100 * 100,
-                mousePos[1] // 100 * 100,
-            ),
-        )
+        # window.blit(
+        #    Door.OpenedDoor,
+        #    (
+        #        mousePos[0] // 100 * 100,
+        #        mousePos[1] // 100 * 100,
+        #    ),
+        # )
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 addEntity(
