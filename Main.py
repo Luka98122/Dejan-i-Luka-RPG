@@ -15,9 +15,9 @@ gridMap = [
     # 012345678901234567890123456789012345678901234567890123456789012345678
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
-    "OOOOOOOOOOOSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
-    "OOOOOSSSSSSSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
-    "OOOOOOOOOOOSSSSSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
+    "OOOOOOOOOOOSSOOOOOOOOOOOOOOOWOWOWWWOWOOWWWOOOOOOOOOOOOOOOOOOOOOOOOOOX",
+    "OOOOOSSSSSSSSSOOOOOOOOOOOOOOWWWOWOWOWOOWWWOOOOOOOOOOOOOOOOOOOOOOOOOOX",
+    "OOOOOOOOOOOSSSSSSSOOOOOOOOOOWOWOWWWOWWOWOWOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOSSSSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOOOSOOOOOOOOOOSSSSSSSSSSSSOOOOOOOOOOSSSOOOOOOOOOOOOX",
@@ -336,7 +336,7 @@ class Player(Entity):
 
     def spell1(self):
         mousePos = pygame.mouse.get_pos()
-
+        mousePos = list(mousePos)
         mousePos[0] = mousePos[0] // 100 * 100
         mousePos[1] = mousePos[1] // 100 * 100
 
@@ -349,7 +349,18 @@ class Player(Entity):
         )
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                addEntity(Trap())
+                addEntity(
+                    Trap(
+                        player.pos.x - 4 + mousePos[0] // 100,
+                        player.pos.y - 4 + mousePos[1] // 100,
+                    ),
+                    currentMap,
+                )
+                print(
+                    player.pos.x - 4 + mousePos[0] // 100,
+                    player.pos.y - 4 + mousePos[1] // 100,
+                    cameraOffset,
+                )
 
     def Activations(self):
         for i in range(len(entityList)):
@@ -389,7 +400,7 @@ class Player(Entity):
             self.movementCooldown = self.movementCooldown - 1
             self.Move()
             self.useInventory()
-            # self.spell1()
+            self.spell1()
 
     def Draw(self):
         picture = self.warrior
@@ -514,6 +525,7 @@ player.hp = 100
 def play():
     global deathCooldown
     global currentMap
+    global window
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
