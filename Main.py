@@ -1,5 +1,4 @@
-from audioop import add
-from turtle import position
+import random
 import pygame
 import sys
 
@@ -171,6 +170,7 @@ class Entity:
 
     def Update(self):
         self.Activate()
+        self.Draw()
 
     def Activate(self):
         for i in range(len(entityList)):
@@ -197,6 +197,50 @@ class Entity:
 
     def takeDamage(self, damage):
         self.hp -= damage
+
+
+class Enemy1(Entity):
+    picture = imgSetup("slime.png")
+
+    def __init__(self, pos) -> None:
+        super().__init__(pos)
+        self.hp = 20
+        self.pos = pygame.Vector2(pos[0], pos[1])
+        self.alive = 1
+        self.type = "Enemy1"
+        self.movementCooldown = 100
+
+    def Update(self):
+        # return super().Update()
+        if self.hp > 0:
+            self.Movement()
+            self.Draw()
+
+    def Draw(self):
+        picture = self.picture
+        return super().Draw(picture)
+
+    def Movement(self):
+        self.movementCooldown -= 1
+        pos2 = [0, 0]
+        r = random.SystemRandom()
+        direct = r.randint(1, 4)
+        if self.movementCooldown <= 0:
+            print("entered")
+            if direct == 1:
+                pos2 = [self.pos.x - 1, self.pos.y]
+            if direct == 2:
+                pos2 = [self.pos.x + 1, self.pos.y]
+            if direct == 3:
+                pos2 = [self.pos.x, self.pos.y - 1]
+            if direct == 4:
+                pos2 = [self.pos.x, self.pos.y + 1]
+            if isPassable(int(pos2[0]), int(pos2[1])):
+                self.pos = pygame.Vector2(pos2[0], pos2[1])
+                self.movementCooldown = 100
+
+    def takeDamage(self, damage):
+        return super().takeDamage(damage)
 
 
 class Trap(Entity):
@@ -268,6 +312,7 @@ def addEntity(entity, map):
         entityList2.append(entity)
 
 
+addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
 for i in range(len(entityList)):
     print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
@@ -596,7 +641,7 @@ def play():
         for i in range(len(entityList)):
             if currentMap == 1:
                 entityList[i].Update()
-                entityList[i].Draw()
+                # entityList[i].Draw()
         for i in range(len(entityList2)):
             if currentMap == 2:
                 entityList2[i].Update()
