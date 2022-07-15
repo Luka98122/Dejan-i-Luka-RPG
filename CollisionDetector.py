@@ -14,13 +14,9 @@ class CollisionDetector:
             entityY = int(entityList[i].pos.y)
             entityX = int(entityList[i].pos.x)
             collisionCell = mapList[entityY][entityX]
-            collisionCell.append(i)
+            collisionCell.append(entityList[i])
 
             if len(collisionCell) > 1:
                 for i in range(len(collisionCell)):
-                    entityList[collisionCell[i]].OnCollide(
-                        entityList[collisionCell[-1]]
-                    )
-                    entityList[collisionCell[-1]].OnCollide(
-                        entityList[collisionCell[i]]
-                    )
+                    collisionCell[i].OnCollide(collisionCell[-1])
+                    collisionCell[-1].OnCollide(collisionCell[i])
