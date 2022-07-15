@@ -1,6 +1,8 @@
 import random
 import pygame
 import sys
+from EnemySpawner import EnemySpawner
+from Entity import Entity
 
 deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
@@ -161,42 +163,6 @@ class HealthPotion(Item):
 
 inventory = [[HealthPotion(10), 1], [HealthPotion(10), 1], [HealthPotion(10), 1]]
 ##### Entities (chests, enemies, missiles)
-class Entity:
-    def __init__(self, pos) -> None:
-        self.pos = pos
-        self.type = 0
-        self.interacted = 0
-        self.hp = 0
-
-    def Update(self):
-        self.Activate()
-        self.Draw()
-
-    def Activate(self):
-        for i in range(len(entityList)):
-            if (
-                self.pos.x == entityList[i].pos.x
-                and self.pos.y == entityList[i].pos.y
-                and self.interacted == 0
-                and entityList[i].type != self.type
-            ):
-                self.interacted = 1
-                if self.type == "trap":
-                    entityList[i].takeDamage(self.damage)
-                if self.type == "chest":
-                    inventory.append([HealthPotion(10), 1])
-
-    def Draw(self, picture):
-        window.blit(
-            picture,
-            (
-                self.pos.x * 100 - int(cameraOffset.x) * 100,
-                self.pos.y * 100 - int(cameraOffset.y) * 100,
-            ),
-        )
-
-    def takeDamage(self, damage):
-        self.hp -= damage
 
 
 class Enemy1(Entity):
@@ -238,6 +204,20 @@ class Enemy1(Entity):
             if isPassable(int(pos2[0]), int(pos2[1])):
                 self.pos = pygame.Vector2(pos2[0], pos2[1])
                 self.movementCooldown = 100
+
+    def takeDamage(self, damage):
+        return super().takeDamage(damage)
+
+
+class Enemy2(Entity):
+    def __init__(self, pos) -> None:
+        super().__init__(pos)
+
+    def Update(self):
+        return super().Update()
+
+    def Draw(self, picture):
+        return super().Draw(picture)
 
     def takeDamage(self, damage):
         return super().takeDamage(damage)
@@ -312,7 +292,6 @@ def addEntity(entity, map):
         entityList2.append(entity)
 
 
-addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
 for i in range(len(entityList)):
     print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
@@ -356,6 +335,8 @@ addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
+addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
+addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
 
 
 # =========================PLAYER==========================#
@@ -659,4 +640,5 @@ def play():
         window.fill(pygame.Color("blue"))
 
 
-main_menu()
+if __name__ == "__main__":
+    main_menu()
