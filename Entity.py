@@ -5,6 +5,9 @@ class Entity:
         self.interacted = 0
         self.hp = 0
 
+    def OnCollide(self, other):
+        print(f"{self}: collision with {other}")
+
     def Update(self):
         self.Activate()
 

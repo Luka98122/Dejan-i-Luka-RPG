@@ -3,7 +3,9 @@ import pygame
 import sys
 from EnemySpawner import EnemySpawner
 from Entity import Entity
+from CollisionDetector import CollisionDetector
 
+collisionDetector = CollisionDetector()
 deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
@@ -207,6 +209,10 @@ class Enemy1(Entity):
     def takeDamage(self, damage):
         return super().takeDamage(damage)
 
+    def OnCollide(self, other):
+        if isinstance(other, Door):
+            other.interacted = 1
+
 
 class Enemy2(Entity):
     def __init__(self, pos) -> None:
@@ -311,6 +317,9 @@ class Door(Entity):
             slika = self.OpenedDoor
         return super().Draw(slika, window, cameraOffset)
 
+    def OnCollide(self, other):
+        pass
+
 
 # =========================DOOR============================#
 
@@ -334,7 +343,7 @@ addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
-addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
+addEntity(Enemy1(pygame.Vector2(11, 5)), 1)
 addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
 
 
@@ -476,6 +485,11 @@ class Player(Entity):
     def takeDamage(self, damage):
         return super().takeDamage(damage)
 
+    def OnCollide(self, other):
+        if isinstance(other, Door):
+            other.interacted = 1
+        # return super().OnCollide(other)
+
 
 player = Player(pygame.Vector2(Player.startx, Player.starty))
 entityList.append(player)
@@ -565,6 +579,9 @@ def play():
         if keys[pygame.K_ESCAPE]:
             sys.exit()
         score = 0
+
+        collisionDetector.Update(entityList)
+
         for i in range(len(entityList)):
             if entityList[i].type == "chest" and entityList[i].interacted == 1:
                 score += 1
