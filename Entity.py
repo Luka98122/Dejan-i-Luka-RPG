@@ -7,23 +7,23 @@ class Entity:
 
     def Update(self):
         self.Activate()
-        self.Draw()
 
     def Activate(self):
-        for i in range(len(entityList)):
-            if (
-                self.pos.x == entityList[i].pos.x
-                and self.pos.y == entityList[i].pos.y
-                and self.interacted == 0
-                and entityList[i].type != self.type
-            ):
-                self.interacted = 1
-                if self.type == "trap":
-                    entityList[i].takeDamage(self.damage)
-                if self.type == "chest":
-                    inventory.append([HealthPotion(10), 1])
+        pass
+        # for i in range(len(entityList)):
+        #    if (
+        #        self.pos.x == entityList[i].pos.x
+        #        and self.pos.y == entityList[i].pos.y
+        #        and self.interacted == 0
+        #        and entityList[i].type != self.type
+        #    ):
+        #        self.interacted = 1
+        #        if self.type == "trap":
+        #            entityList[i].takeDamage(self.damage)
+        #        if self.type == "chest":
+        #            inventory.append([HealthPotion(10), 1])
 
-    def Draw(self, picture):
+    def Draw(self, picture, window, cameraOffset):
         window.blit(
             picture,
             (

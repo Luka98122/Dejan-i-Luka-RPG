@@ -180,11 +180,10 @@ class Enemy1(Entity):
         # return super().Update()
         if self.hp > 0:
             self.Movement()
-            self.Draw()
 
-    def Draw(self):
+    def Draw(self, window, cameraOffset):
         picture = self.picture
-        return super().Draw(picture)
+        return super().Draw(picture, window, cameraOffset)
 
     def Movement(self):
         self.movementCooldown -= 1
@@ -216,8 +215,8 @@ class Enemy2(Entity):
     def Update(self):
         return super().Update()
 
-    def Draw(self, picture):
-        return super().Draw(picture)
+    def Draw(self, window, cameraOffset):
+        return super().Draw(picture, window, cameraOffset)
 
     def takeDamage(self, damage):
         return super().takeDamage(damage)
@@ -242,11 +241,11 @@ class Trap(Entity):
         self.Activate()
         return super().Update()
 
-    def Draw(self):
+    def Draw(self, window, cameraOffset):
         picture = self.explosiveBarrel
         if self.interacted == 1:
             picture = self.oilSpill
-        return super().Draw(picture)
+        return super().Draw(picture, window, cameraOffset)
 
 
 class Button:
@@ -274,11 +273,11 @@ class Chest(Entity):
     def Update(self):
         return super().Update()
 
-    def Draw(self):
+    def Draw(self, window, cameraOffset):
         picture = Chest1
         if self.interacted == 1:
             picture = OpenedChest1
-        return super().Draw(picture)
+        return super().Draw(picture, window, cameraOffset)
 
 
 # =========================CHEST===========================#
@@ -306,11 +305,11 @@ class Door(Entity):
         super().__init__(pos)
         self.interacted = 0
 
-    def Draw(self):
+    def Draw(self, window, cameraOffset):
         slika = self.ClosedDoor
         if self.interacted == 1:
             slika = self.OpenedDoor
-        return super().Draw(slika)
+        return super().Draw(slika, window, cameraOffset)
 
 
 # =========================DOOR============================#
@@ -428,11 +427,11 @@ class Player(Entity):
             self.useInventory()
             self.spell1()
 
-    def Draw(self):
+    def Draw(self, window, cameraOffset):
         picture = self.warrior
         if self.hp <= 0:
             picture = self.bloodPool
-        return super().Draw(picture)
+        return super().Draw(picture, window, cameraOffset)
 
     def Move(
         self,
@@ -622,14 +621,14 @@ def play():
         for i in range(len(entityList)):
             if currentMap == 1:
                 entityList[i].Update()
-                # entityList[i].Draw()
+                entityList[i].Draw(window, cameraOffset)
         for i in range(len(entityList2)):
             if currentMap == 2:
                 entityList2[i].Update()
-                entityList2[i].Draw()
+                entityList2[i].Draw(window, cameraOffset)
         if player.hp >= 1:
             player.Update()
-        player.Draw()
+        player.Draw(window, cameraOffset)
         hud.Draw()
         if player.hp <= 0:
             deathCooldown -= 1
