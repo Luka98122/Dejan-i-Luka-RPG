@@ -4,6 +4,7 @@ import sys
 from EnemySpawner import EnemySpawner
 from Entity import Entity
 from CollisionDetector import CollisionDetector
+from Fire import Fire
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -185,7 +186,8 @@ class Enemy1(Entity):
 
     def Draw(self, window, cameraOffset):
         picture = self.picture
-        return super().Draw(picture, window, cameraOffset)
+        if self.hp > 0:
+            return super().Draw(picture, window, cameraOffset)
 
     def Movement(self):
         self.movementCooldown -= 1
@@ -345,7 +347,7 @@ addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
 addEntity(Enemy1(pygame.Vector2(11, 5)), 1)
 addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
-
+addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
 class Player(Entity):
@@ -384,9 +386,11 @@ class Player(Entity):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 addEntity(
-                    Trap(
-                        player.pos.x - 4 + mousePos[0] // 100,
-                        player.pos.y - 4 + mousePos[1] // 100,
+                    Fire(
+                        pygame.Vector2(
+                            player.pos.x - 4 + mousePos[0] // 100,
+                            player.pos.y - 4 + mousePos[1] // 100,
+                        )
                     ),
                     currentMap,
                 )
