@@ -3,10 +3,12 @@ class Entity:
         self.pos = pos
         self.type = 0
         self.interacted = 0
-        self.hp = 0
+        self.hp = 20
 
     def OnCollide(self, other):
         print(f"{self}: collision with {other}")
+
+    # DEBUG
 
     def Update(self):
         self.Activate()

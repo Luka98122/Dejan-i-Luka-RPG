@@ -5,6 +5,8 @@ from EnemySpawner import EnemySpawner
 from Entity import Entity
 from CollisionDetector import CollisionDetector
 from Fire import Fire
+from FireSystem import FireSystem
+
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -25,9 +27,9 @@ gridMap = [
     "OOOOOOOOOOOOOOOSSSSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOSSSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOOOSOOOOOOOOOOSSSSSSSSSSSSOOOOOOOOOOSSSOOOOOOOOOOOOX",
-    "OOOOOOOOOOOOOOOOOOOOSSSOOOOOOOSSSSSSSSSSSSSSOOOOOOOSSSSSSSOOOOOOOOOOX",
-    "OOOOOOOOOOOOOOOOOOOOOOSOOOOOOOSSWWWWWWWWWWWSSSSOOSSSSWWWWSSOOOOOOOOOX",
-    "OOOOOOOOOOOOOOOOOOOOOOSSSOOOOSSSSSSSWWWWWWWWWWSSSSWWWWSSSSSOOOOOOOOOX",
+    "OOOOOOXXXOOOOOOOOOOOSSSOOOOOOOSSSSSSSSSSSSSSOOOOOOOSSSSSSSOOOOOOOOOOX",
+    "OOOOOOXOXOOOOOOOOOOOOOSOOOOOOOSSWWWWWWWWWWWSSSSOOSSSSWWWWSSOOOOOOOOOX",
+    "OOOOOOXXXOOOOOOOOOOOOOSSSOOOOSSSSSSSWWWWWWWWWWSSSSWWWWSSSSSOOOOOOOOOX",
     "OOOOOOOOOOOOOOOOOOOOOOOOSSSSSSSSSSWWWWWWWWWWWWWWWWWWWWWSSSOOOOOOOOOOX",
     "OOOOOOOOOOOOXXXXXXXXXXXXOOOOOOSSSWWWWWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOX",
     "OOOOOOOOOOOOXFFFFFFFFFFXOOOOOOOSSSSSWWWWWWWWWWWWWWWWWWWSSOOOOOOOOOOOX",
@@ -92,6 +94,8 @@ gridMap2 = [
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFSSSSSSSSSSSSSSSSSS",
     "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOFFFFFFFFFSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
 ]
+
+firesystem = FireSystem(gridMap)
 
 
 def imgSetup(str1):
@@ -195,7 +199,7 @@ class Enemy1(Entity):
         r = random.SystemRandom()
         direct = r.randint(1, 4)
         if self.movementCooldown <= 0:
-            print("entered")
+            # print("entered")
             if direct == 1:
                 pos2 = [self.pos.x - 1, self.pos.y]
             if direct == 2:
@@ -299,8 +303,8 @@ def addEntity(entity, map):
         entityList2.append(entity)
 
 
-for i in range(len(entityList)):
-    print(entityList[i].pos, entityList[i].type)
+# for i in range(len(entityList)):
+#    print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
 
 
@@ -347,7 +351,7 @@ addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
 addEntity(Enemy1(pygame.Vector2(11, 5)), 1)
 addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
-addEntity(Fire(pygame.Vector2(1, 1)), 1)
+# addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
 class Player(Entity):
@@ -384,13 +388,17 @@ class Player(Entity):
         #    ),
         # )
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and isPassable(
+                int(player.pos.x) - 4 + int(mousePos[0]) // 100,
+                int(player.pos.y) - 4 + int(mousePos[1]) // 100,
+            ):
                 addEntity(
                     Fire(
                         pygame.Vector2(
                             player.pos.x - 4 + mousePos[0] // 100,
                             player.pos.y - 4 + mousePos[1] // 100,
-                        )
+                        ),
+                        5,
                     ),
                     currentMap,
                 )
@@ -487,7 +495,11 @@ class Player(Entity):
                 print(self.pos)
 
     def takeDamage(self, damage):
-        return super().takeDamage(damage)
+        GodMode = False
+        if GodMode:
+            pass
+        else:
+            return super().takeDamage(damage)
 
     def OnCollide(self, other):
         if isinstance(other, Door):
@@ -569,7 +581,11 @@ def play():
     global deathCooldown
     global currentMap
     global window
+
+    frameCounter = 0
+
     while True:
+        frameCounter += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.display.quit()
@@ -584,7 +600,9 @@ def play():
             sys.exit()
         score = 0
 
+        # System update
         collisionDetector.Update(entityList)
+        firesystem.Update(entityList, frameCounter)
 
         for i in range(len(entityList)):
             if entityList[i].type == "chest" and entityList[i].interacted == 1:
@@ -639,14 +657,22 @@ def play():
                             i * 100 - int(cameraOffset.y) * 100,
                         ),
                     )
-        for i in range(len(entityList)):
-            if currentMap == 1:
-                entityList[i].Update()
-                entityList[i].Draw(window, cameraOffset)
-        for i in range(len(entityList2)):
-            if currentMap == 2:
-                entityList2[i].Update()
-                entityList2[i].Draw(window, cameraOffset)
+        # Update all entities
+        for entity in entityList:
+            entity.Update()
+
+        # Remove dead enities
+        i = 0
+        while i < len(entityList):
+            if entityList[i].hp <= 0:
+                entityList.remove(entityList[i])
+                i -= 1
+            i += 1
+
+        # Draw all entities
+        for entity in entityList:
+            entity.Draw(window, cameraOffset)
+
         if player.hp >= 1:
             player.Update()
         player.Draw(window, cameraOffset)
@@ -658,6 +684,7 @@ def play():
             pygame.quit()
             sys.exit()
         window.fill(pygame.Color("blue"))
+        print(f"EC: {len(entityList):4}")
 
 
 if __name__ == "__main__":
