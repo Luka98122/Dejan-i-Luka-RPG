@@ -7,7 +7,8 @@ Classes to move to own file:
 * [√]PLayer (bug on entity collision, must do door next)
 * [√]Door
 * [√]HUD
-* [X]chest
+* [√]item
+* [√]chest
 * [X]trap
 * [X]Enemy1
 * [X]HealthPotion
