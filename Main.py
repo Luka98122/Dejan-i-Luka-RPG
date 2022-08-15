@@ -6,7 +6,9 @@ from Entity import Entity
 from CollisionDetector import CollisionDetector
 from Fire import Fire
 from FireSystem import FireSystem
-
+from Player import Player
+from Door import Door
+from HUD import Hud
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -168,7 +170,6 @@ class HealthPotion(Item):
         super().Draw()
 
 
-inventory = [[HealthPotion(10), 1], [HealthPotion(10), 1], [HealthPotion(10), 1]]
 ##### Entities (chests, enemies, missiles)
 
 
@@ -308,25 +309,6 @@ def addEntity(entity, map):
 # =========================DOOR============================#
 
 
-class Door(Entity):
-    ClosedDoor = imgSetup("ClosedDoor.png")
-    OpenedDoor = imgSetup("OpenedDoor.png")
-
-    def __init__(self, x, y) -> None:
-        pos = pygame.Vector2(x, y)
-        super().__init__(pos)
-        self.interacted = 0
-
-    def Draw(self, window, cameraOffset):
-        slika = self.ClosedDoor
-        if self.interacted == 1:
-            slika = self.OpenedDoor
-        return super().Draw(slika, window, cameraOffset)
-
-    def OnCollide(self, other):
-        pass
-
-
 # =========================DOOR============================#
 
 # =========================ENTITIES========================#
@@ -354,187 +336,19 @@ addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
 # addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
-class Player(Entity):
-    startx = 4
-    starty = 4
-    pos = pygame.Vector2(startx, starty)
-    speed = 5
-    hp = 100
-    movementCooldown = 0
-    potionCooldown = 100
-    defaultCooldown = 15
-    warrior = imgSetup("warrior.png")
-    bloodPool = imgSetup("BloodPool.png")
-    type = "player"
-
-    def __init__(self, pos) -> None:
-        super().__init__(pos)
-        self.type = "player"
-
-    def Heal(self, amount):
-        self.hp = self.hp + amount
-
-    def spell1(self):
-        mousePos = pygame.mouse.get_pos()
-        mousePos = list(mousePos)
-        mousePos[0] = mousePos[0] // 100 * 100
-        mousePos[1] = mousePos[1] // 100 * 100
-
-        # window.blit(
-        #    Door.OpenedDoor,
-        #    (
-        #        mousePos[0] // 100 * 100,
-        #        mousePos[1] // 100 * 100,
-        #    ),
-        # )
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and isPassable(
-                int(player.pos.x) - 4 + int(mousePos[0]) // 100,
-                int(player.pos.y) - 4 + int(mousePos[1]) // 100,
-            ):
-                addEntity(
-                    Fire(
-                        pygame.Vector2(
-                            player.pos.x - 4 + mousePos[0] // 100,
-                            player.pos.y - 4 + mousePos[1] // 100,
-                        ),
-                        5,
-                    ),
-                    currentMap,
-                )
-                print(
-                    player.pos.x - 4 + mousePos[0] // 100,
-                    player.pos.y - 4 + mousePos[1] // 100,
-                    cameraOffset,
-                )
-
-    def Activations(self):
-        for i in range(len(entityList)):
-            if (
-                self.pos.x == entityList[i].pos.x
-                and self.pos.y == entityList[i].pos.y
-                and entityList[i].type != "trap"
-            ):
-                entityList[i].interacted = 1
-                # print(entityList[i].interacted)
-                # entityList[i].Draw()
-
-    def useInventory(self):
-        realI = 0
-        keys = pygame.key.get_pressed()
-        # print(keys[48])
-        self.potionCooldown -= 1
-        if len(inventory) == 0:
-            return
-        if inventory[-1][0].uses == 0:
-            del inventory[-1]
-        if len(inventory) == 0:
-            return
-        if keys[pygame.K_r]:
-            if inventory[-1][0].uses >= 1:
-                if (
-                    inventory[-1][0].type == "HealthPotion"
-                    and inventory[-1][0].uses > 0
-                    and self.potionCooldown <= 0
-                ):
-                    self.Heal(inventory[-1][0].heal)
-                    inventory[-1][0].uses -= 1
-                    self.potionCooldown = 100
-
-    def Update(self):
-        if self.hp > 0:
-            self.movementCooldown = self.movementCooldown - 1
-            self.Move()
-            self.useInventory()
-            self.spell1()
-
-    def Draw(self, window, cameraOffset):
-        picture = self.warrior
-        if self.hp <= 0:
-            picture = self.bloodPool
-        return super().Draw(picture, window, cameraOffset)
-
-    def Move(
-        self,
-    ):
-        global cameraOffset
-        global latestMove
-        if self.movementCooldown < 0:
-            keys = pygame.key.get_pressed()
-            if (
-                keys[pygame.K_w]
-                and isPassable(int(self.pos.x), int(self.pos.y - 1)) == True
-            ):
-                self.pos.y = self.pos.y - 1
-                self.movementCooldown = self.defaultCooldown
-                cameraOffset.y -= 1
-                print(self.pos)
-            if (
-                keys[pygame.K_s]
-                and isPassable(int(self.pos.x), int(self.pos.y + 1)) == True
-            ):
-                self.pos.y = self.pos.y + 1
-                self.movementCooldown = self.defaultCooldown
-                cameraOffset.y += 1
-                print(self.pos)
-            if (
-                keys[pygame.K_a]
-                and isPassable(int(self.pos.x - 1), int(self.pos.y)) == True
-            ):
-                self.pos.x = self.pos.x - 1
-                self.movementCooldown = self.defaultCooldown
-                cameraOffset.x -= 1
-                print(self.pos)
-            if (
-                keys[pygame.K_d]
-                and isPassable(int(self.pos.x + 1), int(self.pos.y)) == True
-            ):
-                self.pos.x = self.pos.x + 1
-                self.movementCooldown = self.defaultCooldown
-                cameraOffset.x += 1
-                print(self.pos)
-
-    def takeDamage(self, damage):
-        GodMode = False
-        if GodMode:
-            pass
-        else:
-            return super().takeDamage(damage)
-
-    def OnCollide(self, other):
-        if isinstance(other, Door):
-            other.interacted = 1
-        # return super().OnCollide(other)
 
 
-player = Player(pygame.Vector2(Player.startx, Player.starty))
+player = Player(
+    pygame.Vector2(Player.startx, Player.starty), isPassable, addEntity, cameraOffset
+)
 entityList.append(player)
 # =========================PLAYER==========================#
 
 
 # =========================HUD=============================#
-class Hud:
-    heart = pygame.image.load("Textures\Heart.png")
-    heart = pygame.transform.scale(heart, (50, 50))
-    quickUseSlots = pygame.image.load("Textures\quickUseSlots.png")
-    quickUseSlots = pygame.transform.scale(quickUseSlots, (220, 64))
-
-    def __init__(self) -> None:
-        pass
-
-    def Draw(self):
-        for i in range(player.hp // 10):
-            window.blit(self.heart, (i * 50, 0))
-        window.blit(self.quickUseSlots, (0, 525))
-        for i in range(len(inventory)):
-            if inventory[i][0].uses > 0:
-                window.blit(inventory[i][0].picture, (5 + i * 65, 520))
-
-    def update(self):
-        pass
 
 
-hud = Hud()
+hud = Hud(window, player)
 # =========================HUD=============================#
 
 

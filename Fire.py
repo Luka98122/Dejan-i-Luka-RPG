@@ -11,8 +11,8 @@ class Fire(Entity):
         self.dmg = 2
         self.randy = random
         randy = random
-        self.hp = randy.randint(60, 150)
-        self.randomSpread = 20
+        self.hp = randy.randint(30, 150)
+        self.randomSpread = 10
         self.generation = generation
         if Fire.picture == None:
             Fire.picture = pygame.image.load("Textures\\Fire.png")
