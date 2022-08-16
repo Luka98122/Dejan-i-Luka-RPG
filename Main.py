@@ -9,6 +9,10 @@ from FireSystem import FireSystem
 from Player import Player
 from Door import Door
 from HUD import Hud
+from Item import Item
+from Trap import Trap
+from Chest import Chest
+from Enemy1 import Enemy1
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -139,126 +143,9 @@ def isPassable(
 
 
 #### Items
-class Item:
-    def __init__(self) -> None:
-        self.uses = 1
-
-    def Update(self):
-        pass
-
-    def Draw(self):
-        pass
-
-
-class HealthPotion(Item):
-    healthPot = pygame.image.load("Textures\healthPotion.png")
-    healthPot = pygame.transform.scale(healthPot, (75, 75))
-    picture = healthPot
-
-    def __init__(self, heal):
-        # super().__init__()
-        self.uses = 1
-        self.heal = heal
-        self.type = "HealthPotion"
-
-    def Update(self):
-        super().Update()
-        if self.uses > 0:
-            player.takeDamage(-self.heal)
-
-    def Draw(self):
-        super().Draw()
 
 
 ##### Entities (chests, enemies, missiles)
-
-
-class Enemy1(Entity):
-    picture = imgSetup("slime.png")
-
-    def __init__(self, pos) -> None:
-        super().__init__(pos)
-        self.hp = 20
-        self.pos = pygame.Vector2(pos[0], pos[1])
-        self.alive = 1
-        self.type = "Enemy1"
-        self.movementCooldown = 100
-
-    def Update(self):
-        # return super().Update()
-        if self.hp > 0:
-            self.Movement()
-
-    def Draw(self, window, cameraOffset):
-        picture = self.picture
-        if self.hp > 0:
-            return super().Draw(picture, window, cameraOffset)
-
-    def Movement(self):
-        self.movementCooldown -= 1
-        pos2 = [0, 0]
-        r = random.SystemRandom()
-        direct = r.randint(1, 4)
-        if self.movementCooldown <= 0:
-            # print("entered")
-            if direct == 1:
-                pos2 = [self.pos.x - 1, self.pos.y]
-            if direct == 2:
-                pos2 = [self.pos.x + 1, self.pos.y]
-            if direct == 3:
-                pos2 = [self.pos.x, self.pos.y - 1]
-            if direct == 4:
-                pos2 = [self.pos.x, self.pos.y + 1]
-            if isPassable(int(pos2[0]), int(pos2[1])):
-                self.pos = pygame.Vector2(pos2[0], pos2[1])
-                self.movementCooldown = 100
-
-    def takeDamage(self, damage):
-        return super().takeDamage(damage)
-
-    def OnCollide(self, other):
-        if isinstance(other, Door):
-            other.interacted = 1
-
-
-class Enemy2(Entity):
-    def __init__(self, pos) -> None:
-        super().__init__(pos)
-
-    def Update(self):
-        return super().Update()
-
-    def Draw(self, window, cameraOffset):
-        return super().Draw(picture, window, cameraOffset)
-
-    def takeDamage(self, damage):
-        return super().takeDamage(damage)
-
-
-class Trap(Entity):
-    explosiveBarrel = imgSetup("ExplosiveBarrel.png")
-    oilSpill = imgSetup("OilSpill.png")
-    type = "trap"
-
-    def __init__(self, x, y) -> None:
-        pos = pygame.Vector2(x, y)
-        super().__init__(pos)
-        self.damage = 20
-        self.interacted = 0
-        self.type = "trap"
-
-    def Activate(self):
-        return super().Activate()
-
-    def Update(self):
-        self.Activate()
-        return super().Update()
-
-    def Draw(self, window, cameraOffset):
-        picture = self.explosiveBarrel
-        if self.interacted == 1:
-            picture = self.oilSpill
-        return super().Draw(picture, window, cameraOffset)
 
 
 class Button:
@@ -273,24 +160,6 @@ class Button:
 Play_Button = Button(StartButton, (275, 210))
 
 # =========================CHEST===========================#
-class Chest(Entity):
-    def __init__(self, x, y) -> None:
-        pos = pygame.Vector2(x, y)
-        super().__init__(pos)
-        self.interacted = 0
-        self.type = "chest"
-
-    def Activate(self):
-        return super().Activate()
-
-    def Update(self):
-        return super().Update()
-
-    def Draw(self, window, cameraOffset):
-        picture = Chest1
-        if self.interacted == 1:
-            picture = OpenedChest1
-        return super().Draw(picture, window, cameraOffset)
 
 
 # =========================CHEST===========================#
@@ -331,8 +200,8 @@ addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
-addEntity(Enemy1(pygame.Vector2(11, 5)), 1)
-addEntity(Enemy1(pygame.Vector2(10, 5)), 1)
+addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
+addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
 # addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
