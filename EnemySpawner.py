@@ -2,11 +2,13 @@ from Entity import Entity
 import pygame
 from Enemy1 import Enemy1
 import random
+import CheatFile
 
 
 class EnemySpawner(Entity):
+    sizeofEverything = CheatFile.sizeofEverything
     picture = pygame.image.load("textures\\EnemySorcerer.png")
-    picture = pygame.transform.scale(picture, (100, 100))
+    picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
 
     def __init__(self, pos, isPassable, addEntity) -> None:
         self.addEntity = addEntity

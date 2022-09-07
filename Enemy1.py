@@ -2,11 +2,13 @@ import pygame
 from Entity import Entity
 import random
 from Door import Door
+import CheatFile
 
 
 class Enemy1(Entity):
+    sizeofEverything = CheatFile.sizeofEverything
     picture = pygame.image.load("textures\\slime.png")
-    picture = pygame.transform.scale(picture, (100, 100))
+    picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
 
     def __init__(self, pos, isPassable) -> None:
         super().__init__(pos)

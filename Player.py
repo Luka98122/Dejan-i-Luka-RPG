@@ -5,24 +5,21 @@ from Fire import Fire
 from Door import Door
 from HealthPotion import HealthPotion
 from Trap import Trap
+import CheatFile
 
 
 class Player(Entity):
-    startx = 4
-    starty = 4
-    pos = pygame.Vector2(startx, starty)
+    sizeofEverything = 0
     speed = 5
     hp = 100
     movementCooldown = 0
     potionCooldown = 100
     defaultCooldown = 15
-    picture = pygame.image.load("textures\\wizard.png")
-    picture = pygame.transform.scale(picture, (100, 100))
-    bloodpool = pygame.image.load("textures\\BloodPool.png")
-    bloodpool = pygame.transform.scale(bloodpool, (100, 100))
     type = "player"
     isPassable = 0
     addEntity = 0
+    picture = 0
+    bloodpool = 0
 
     def __init__(self, pos, isPassable, addEntity, cameraOffset) -> None:
         super().__init__(pos)
@@ -30,12 +27,26 @@ class Player(Entity):
         self.isPassable = isPassable
         self.addEntity = addEntity
         self.cameraOffset = cameraOffset
+        self.sizeofEverything = CheatFile.sizeofEverything
         self.inventory = [
             [HealthPotion(10, self), 1],
             [HealthPotion(10, self), 1],
             [HealthPotion(10, self), 1],
         ]
         self.spellSlot = 1
+        self.picture = pygame.image.load("textures\\wizard.png")
+        self.picture = pygame.transform.scale(
+            self.picture, (self.sizeofEverything, self.sizeofEverything)
+        )
+
+        self.bloodpool = pygame.image.load("textures\\BloodPool.png")
+        self.bloodpool = pygame.transform.scale(
+            self.bloodpool, (self.sizeofEverything, self.sizeofEverything)
+        )
+
+    startx = 4  # * sizeofEverything // 100
+    starty = 4  # * sizeofEverything // 100
+    pos = pygame.Vector2(startx, starty)
 
     def Heal(self, amount):
         self.hp = self.hp + amount
@@ -45,8 +56,8 @@ class Player(Entity):
     ):
         mousePos = pygame.mouse.get_pos()
         mousePos = list(mousePos)
-        mousePos[0] = mousePos[0] // 100 * 100
-        mousePos[1] = mousePos[1] // 100 * 100
+        mousePos[0] = mousePos[0] // self.sizeofEverything * self.sizeofEverything
+        mousePos[1] = mousePos[1] // self.sizeofEverything * self.sizeofEverything
 
         # window.blit(
         #    Door.OpenedDoor,
@@ -56,23 +67,27 @@ class Player(Entity):
         #    ),
         # )
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and self.isPassable(
-                int(self.pos.x) - 4 + int(mousePos[0]) // 100,
-                int(self.pos.y) - 4 + int(mousePos[1]) // 100,
+            if (
+                event.type == pygame.MOUSEBUTTONDOWN
+                and event.button == 1
+                and self.isPassable(
+                    int(self.pos.x) - 4 + int(mousePos[0]) // self.sizeofEverything,
+                    int(self.pos.y) - 4 + int(mousePos[1]) // self.sizeofEverything,
+                )
             ):
                 self.addEntity(
                     Fire(
                         pygame.Vector2(
-                            self.pos.x - 4 + mousePos[0] // 100,
-                            self.pos.y - 4 + mousePos[1] // 100,
+                            self.pos.x - 4 + mousePos[0] // self.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // self.sizeofEverything,
                         ),
                         5,
                     ),
                     1,
                 )
                 print(
-                    self.pos.x - 4 + mousePos[0] // 100,
-                    self.pos.y - 4 + mousePos[1] // 100,
+                    self.pos.x - 4 + mousePos[0] // self.sizeofEverything,
+                    self.pos.y - 4 + mousePos[1] // self.sizeofEverything,
                     self.cameraOffset,
                 )
 
@@ -82,9 +97,13 @@ class Player(Entity):
         mousePos[0] = mousePos[0] // 100 * 100
         mousePos[1] = mousePos[1] // 100 * 100
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and self.isPassable(
-                int(self.pos.x) - 4 + int(mousePos[0]) // 100,
-                int(self.pos.y) - 4 + int(mousePos[1]) // 100,
+            if (
+                event.type == pygame.MOUSEBUTTONDOWN
+                and event.button == 1
+                and self.isPassable(
+                    int(self.pos.x) - 4 + int(mousePos[0]) // 100,
+                    int(self.pos.y) - 4 + int(mousePos[1]) // 100,
+                )
             ):
                 self.addEntity(
                     Trap(

@@ -1,13 +1,17 @@
 import pygame
 from Entity import Entity
 from Enemy1 import Enemy1
+import CheatFile
 
 
 class Trap(Entity):
+    sizeofEverything = CheatFile.sizeofEverything
     explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
     oilSpill = pygame.image.load("textures\\OilSpill.png")
-    explosiveBarrel = pygame.transform.scale(explosiveBarrel, (100, 100))
-    oilSpill = pygame.transform.scale(oilSpill, (100, 100))
+    explosiveBarrel = pygame.transform.scale(
+        explosiveBarrel, (sizeofEverything, sizeofEverything)
+    )
+    oilSpill = pygame.transform.scale(oilSpill, (sizeofEverything, sizeofEverything))
     type = "trap"
 
     def __init__(self, x, y) -> None:

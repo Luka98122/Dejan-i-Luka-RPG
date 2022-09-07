@@ -1,12 +1,16 @@
 import pygame
 from Entity import Entity
+import CheatFile
 
 
 class Chest(Entity):
+    sizeofEverything = CheatFile.sizeofEverything
     Chest1 = pygame.image.load("textures\\Chest1.png")
     OpenedChest1 = pygame.image.load("textures\\OpenedChest1.png")
-    Chest1 = pygame.transform.scale(Chest1, (100, 100))
-    OpenedChest1 = pygame.transform.scale(OpenedChest1, (100, 100))
+    Chest1 = pygame.transform.scale(Chest1, (sizeofEverything, sizeofEverything))
+    OpenedChest1 = pygame.transform.scale(
+        OpenedChest1, (sizeofEverything, sizeofEverything)
+    )
 
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)

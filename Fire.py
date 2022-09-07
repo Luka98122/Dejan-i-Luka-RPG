@@ -1,10 +1,12 @@
 import pygame
 from Entity import Entity
 import random
+import CheatFile
 
 
 class Fire(Entity):
     picture = None
+    sizeofEverything = CheatFile.sizeofEverything
 
     def __init__(self, pos, generation) -> None:
         super().__init__(pos)
@@ -16,7 +18,9 @@ class Fire(Entity):
         self.generation = generation
         if Fire.picture == None:
             Fire.picture = pygame.image.load("Textures\\Fire.png")
-            Fire.picture = pygame.transform.scale(Fire.picture, (100, 100))
+            Fire.picture = pygame.transform.scale(
+                Fire.picture, (self.sizeofEverything, self.sizeofEverything)
+            )
 
     def Update(self):
         # if self.randy.randint(1,100) == self.randomSpread():

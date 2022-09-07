@@ -14,7 +14,7 @@ from Trap import Trap
 from Chest import Chest
 from Enemy1 import Enemy1
 from EnemySpawner import EnemySpawner
-
+import CheatFile
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -22,6 +22,10 @@ cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 0
 entityList = []
+
+
+sizeOfEverything = CheatFile.sizeofEverything
+
 currentMap = 1
 latestMove = pygame.Vector2(0, 0)
 # X = zid, O = vazduh, C = coin, S = sand, W = water, D = door
@@ -109,7 +113,7 @@ firesystem = FireSystem(gridMap)
 def imgSetup(str1):
     stringy = "Textures\\" + str1
     img = pygame.image.load(stringy)
-    img = pygame.transform.scale(img, (100, 100))
+    img = pygame.transform.scale(img, (sizeOfEverything, sizeOfEverything))
     return img
 
 
@@ -211,7 +215,10 @@ addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 
 
 player = Player(
-    pygame.Vector2(Player.startx, Player.starty), isPassable, addEntity, cameraOffset
+    pygame.Vector2(Player.startx, Player.starty),
+    isPassable,
+    addEntity,
+    cameraOffset,
 )
 entityList.append(player)
 # =========================PLAYER==========================#
@@ -280,9 +287,9 @@ def play():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     pause()
-        for event in pygame.event.get():
             if event.type == pygame.MOUSEWHEEL:
-                print(event.x, event.y)
+                CheatFile.sizeofEverything = CheatFile.sizeofEverything / 2
+                print(event.x, event.y, "THIS")
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             sys.exit()
@@ -320,8 +327,10 @@ def play():
                     window.blit(
                         slika,
                         (
-                            j * 100 - int(cameraOffset.x) * 100,
-                            i * 100 - int(cameraOffset.y) * 100,
+                            j * sizeOfEverything
+                            - int(cameraOffset.x) * sizeOfEverything,
+                            i * sizeOfEverything
+                            - int(cameraOffset.y) * sizeOfEverything,
                         ),
                     )
         if currentMap == 2:
@@ -372,7 +381,7 @@ def play():
             pygame.quit()
             sys.exit()
         window.fill(pygame.Color("blue"))
-        print(f"EC: {len(entityList):4}")
+        # print(f"EC: {len(entityList):4}")
 
 
 if __name__ == "__main__":

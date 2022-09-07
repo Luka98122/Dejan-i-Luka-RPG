@@ -1,4 +1,9 @@
+import CheatFile
+
+
 class Entity:
+    sizeofEverything = CheatFile.sizeofEverything
+
     def __init__(self, pos) -> None:
         self.pos = pos
         self.type = 0
@@ -32,8 +37,10 @@ class Entity:
         window.blit(
             picture,
             (
-                self.pos.x * 100 - int(cameraOffset.x) * 100,
-                self.pos.y * 100 - int(cameraOffset.y) * 100,
+                self.pos.x * self.sizeofEverything
+                - int(cameraOffset.x) * self.sizeofEverything,
+                self.pos.y * self.sizeofEverything
+                - int(cameraOffset.y) * self.sizeofEverything,
             ),
         )
 
