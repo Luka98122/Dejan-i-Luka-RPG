@@ -13,6 +13,8 @@ from Item import Item
 from Trap import Trap
 from Chest import Chest
 from Enemy1 import Enemy1
+from EnemySpawner import EnemySpawner
+
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -202,6 +204,7 @@ addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
 addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
 addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
+addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 # addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
@@ -277,7 +280,9 @@ def play():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     pause()
-
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEWHEEL:
+                print(event.x, event.y)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             sys.exit()
