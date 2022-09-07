@@ -1,7 +1,10 @@
 import pygame
+from Chest import Chest
 from Entity import Entity
 from Fire import Fire
 from Door import Door
+from HealthPotion import HealthPotion
+from Trap import Trap
 
 
 class Player(Entity):
@@ -13,8 +16,8 @@ class Player(Entity):
     movementCooldown = 0
     potionCooldown = 100
     defaultCooldown = 15
-    warrior = pygame.image.load("textures\\warrior.png")
-    warrior = pygame.transform.scale(warrior, (100, 100))
+    picture = pygame.image.load("textures\\wizard.png")
+    picture = pygame.transform.scale(picture, (100, 100))
     bloodpool = pygame.image.load("textures\\BloodPool.png")
     bloodpool = pygame.transform.scale(bloodpool, (100, 100))
     type = "player"
@@ -27,9 +30,12 @@ class Player(Entity):
         self.isPassable = isPassable
         self.addEntity = addEntity
         self.cameraOffset = cameraOffset
-        self.inventory = (
-            []
-        )  # [[HealthPotion(10), 1], [HealthPotion(10), 1], [HealthPotion(10), 1]]
+        self.inventory = [
+            [HealthPotion(10, self), 1],
+            [HealthPotion(10, self), 1],
+            [HealthPotion(10, self), 1],
+        ]
+        self.spellSlot = 1
 
     def Heal(self, amount):
         self.hp = self.hp + amount
@@ -70,6 +76,49 @@ class Player(Entity):
                     self.cameraOffset,
                 )
 
+    def spell2(self):
+        mousePos = pygame.mouse.get_pos()
+        mousePos = list(mousePos)
+        mousePos[0] = mousePos[0] // 100 * 100
+        mousePos[1] = mousePos[1] // 100 * 100
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN and self.isPassable(
+                int(self.pos.x) - 4 + int(mousePos[0]) // 100,
+                int(self.pos.y) - 4 + int(mousePos[1]) // 100,
+            ):
+                self.addEntity(
+                    Trap(
+                        self.pos.x - 4 + mousePos[0] // 100,
+                        self.pos.y - 4 + mousePos[1] // 100,
+                    ),
+                    1,
+                )
+
+    def spell3(self):
+        mousePos = pygame.mouse.get_pos()
+        mousePos = list(mousePos)
+        mousePos[0] = mousePos[0] // 100 * 100
+        mousePos[1] = mousePos[1] // 100 * 100
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_o]:
+            self.addEntity(
+                Portal(
+                    self.pos.x - 4 + mousePos[0] // 100,
+                    self.pos.y - 4 + mousePos[1] // 100,
+                    0,
+                ),
+                1,
+            )
+        if keys[pygame.K_p]:
+            self.addEntity(
+                Portal(
+                    self.pos.x - 4 + mousePos[0] // 100,
+                    self.pos.y - 4 + mousePos[1] // 100,
+                    1,
+                ),
+                1,
+            )
+
     def Activations(self, entityList):
         for i in range(len(entityList)):
             if (
@@ -103,15 +152,26 @@ class Player(Entity):
                     self.inventory[-1][0].uses -= 1
                     self.potionCooldown = 100
 
+    def selectSpell(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_1]:
+            self.spellSlot = 1
+        if keys[pygame.K_2]:
+            self.spellSlot = 2
+
     def Update(self):
         if self.hp > 0:
             self.movementCooldown = self.movementCooldown - 1
             self.Move()
             self.useInventory()
-            self.spell1()
+            self.selectSpell()
+            if self.spellSlot == 1:
+                self.spell1()
+            if self.spellSlot == 2:
+                self.spell2()
 
     def Draw(self, window, cameraOffset):
-        picture = self.warrior
+        picture = self.picture
         if self.hp <= 0:
             picture = self.bloodpool
         return super().Draw(picture, window, cameraOffset)
@@ -163,4 +223,7 @@ class Player(Entity):
     def OnCollide(self, other):
         if isinstance(other, Door):
             other.interacted = 1
+        if isinstance(other, Chest) and other.interacted == 0:
+            other.interacted = 1
+            self.inventory.append([HealthPotion(10, self), 1])
         # return super().OnCollide(other)
