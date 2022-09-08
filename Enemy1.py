@@ -24,10 +24,14 @@ class Enemy1(Entity):
         if self.hp > 0:
             self.Movement()
 
+    def reScale(self, newSize):
+        self.picture = pygame.image.load("textures\\slime.png")
+        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
+
     def Draw(self, window, cameraOffset):
         picture = self.picture
         if self.hp > 0:
-            return super().Draw(picture, window, cameraOffset)
+            return super().Draw(picture, window, cameraOffset, self.picture.get_width())
 
     def Movement(self):
         self.movementCooldown -= 1

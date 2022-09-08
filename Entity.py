@@ -33,14 +33,12 @@ class Entity:
         #        if self.type == "chest":
         #            inventory.append([HealthPotion(10), 1])
 
-    def Draw(self, picture, window, cameraOffset):
+    def Draw(self, picture, window, cameraOffset, size):
         window.blit(
             picture,
             (
-                self.pos.x * self.sizeofEverything
-                - int(cameraOffset.x) * self.sizeofEverything,
-                self.pos.y * self.sizeofEverything
-                - int(cameraOffset.y) * self.sizeofEverything,
+                self.pos.x * size - int(cameraOffset.x) * size,
+                self.pos.y * size - int(cameraOffset.y) * size,
             ),
         )
 

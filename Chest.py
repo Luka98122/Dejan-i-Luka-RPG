@@ -18,6 +18,14 @@ class Chest(Entity):
         self.interacted = 0
         self.type = "chest"
 
+    def reScale(self, newSize):
+        self.Chest1 = pygame.image.load("textures\\Chest1.png")
+        self.OpenedChest1 = pygame.image.load("textures\\OpenedChest1.png")
+        self.Chest1 = pygame.transform.scale(self.Chest1, (newSize, newSize))
+        self.OpenedChest1 = pygame.transform.scale(
+            self.OpenedChest1, (newSize, newSize)
+        )
+
     def Activate(self):
         return super().Activate()
 
@@ -28,7 +36,7 @@ class Chest(Entity):
         picture = self.Chest1
         if self.interacted == 1:
             picture = self.OpenedChest1
-        return super().Draw(picture, window, cameraOffset)
+        return super().Draw(picture, window, cameraOffset, self.Chest1.get_width())
 
     def OnCollide(self, other):
         if other.type == "player":

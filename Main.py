@@ -274,6 +274,7 @@ def play():
     global deathCooldown
     global currentMap
     global window
+    global sizeOfEverything
 
     frameCounter = 0
 
@@ -288,7 +289,14 @@ def play():
                 if event.key == pygame.K_p:
                     pause()
             if event.type == pygame.MOUSEWHEEL:
-                CheatFile.sizeofEverything = CheatFile.sizeofEverything / 2
+                if event.y > 0:
+                    for entity in entityList:
+                        entity.reScale(sizeOfEverything * 2)
+                    sizeOfEverything = sizeOfEverything * 2
+                if event.y < 0:
+                    for entity in entityList:
+                        entity.reScale(sizeOfEverything / 2)
+                    sizeOfEverything = sizeOfEverything / 2
                 print(event.x, event.y, "THIS")
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:

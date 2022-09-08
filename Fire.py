@@ -22,6 +22,10 @@ class Fire(Entity):
                 Fire.picture, (self.sizeofEverything, self.sizeofEverything)
             )
 
+    def reScale(self, newSize):
+        Fire.picture = pygame.image.load("Textures\\Fire.png")
+        Fire.picture = pygame.transform.scale(Fire.picture, (newSize, newSize))
+
     def Update(self):
         # if self.randy.randint(1,100) == self.randomSpread():
         self.hp -= 1
@@ -31,4 +35,6 @@ class Fire(Entity):
         other.takeDamage(self.dmg)
 
     def Draw(self, window, cameraOffset):
-        return super().Draw(Fire.picture, window, cameraOffset)
+        return super().Draw(
+            Fire.picture, window, cameraOffset, Fire.picture.get_width()
+        )

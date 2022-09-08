@@ -18,7 +18,13 @@ class EnemySpawner(Entity):
         super().__init__(pos)
 
     def Draw(self, window, cameraOffset):
-        return super().Draw(self.picture, window, cameraOffset)
+        return super().Draw(
+            self.picture, window, cameraOffset, self.picture.get_width()
+        )
+
+    def reScale(self, newSize):
+        self.picture = pygame.image.load("textures\\EnemySorcerer.png")
+        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
 
     def Update(self):
         if self.hp > 0:

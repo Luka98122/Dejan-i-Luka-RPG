@@ -51,6 +51,13 @@ class Player(Entity):
     def Heal(self, amount):
         self.hp = self.hp + amount
 
+    def reScale(self, newSize):
+        self.picture = pygame.image.load("textures\\wizard.png")
+        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
+
+        self.bloodpool = pygame.image.load("textures\\BloodPool.png")
+        self.bloodpool = pygame.transform.scale(self.bloodpool, (newSize, newSize))
+
     def spell1(
         self,
     ):
@@ -193,7 +200,7 @@ class Player(Entity):
         picture = self.picture
         if self.hp <= 0:
             picture = self.bloodpool
-        return super().Draw(picture, window, cameraOffset)
+        return super().Draw(picture, window, cameraOffset, self.picture.get_width())
 
     def Move(self):
         global latestMove

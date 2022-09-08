@@ -24,6 +24,14 @@ class Trap(Entity):
     def Activate(self):
         return super().Activate()
 
+    def reScale(self, newSize):
+        self.explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
+        self.oilSpill = pygame.image.load("textures\\OilSpill.png")
+        self.explosiveBarrel = pygame.transform.scale(
+            self.explosiveBarrel, (newSize, newSize)
+        )
+        self.oilSpill = pygame.transform.scale(self.oilSpill, (newSize, newSize))
+
     def Update(self):
         self.Activate()
         return super().Update()
@@ -32,7 +40,9 @@ class Trap(Entity):
         picture = self.explosiveBarrel
         if self.interacted == 1:
             picture = self.oilSpill
-        return super().Draw(picture, window, cameraOffset)
+        return super().Draw(
+            picture, window, cameraOffset, self.explosiveBarrel.get_width()
+        )
 
     def OnCollide(self, other):
         if self.interacted == 0:
