@@ -2,10 +2,11 @@ import pygame
 from Entity import Entity
 from Enemy1 import Enemy1
 import CheatFile
+from globals import Globals
 
 
 class Trap(Entity):
-    sizeofEverything = CheatFile.sizeofEverything
+    sizeofEverything = Globals.sizeofEverything
     explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
     oilSpill = pygame.image.load("textures\\OilSpill.png")
     explosiveBarrel = pygame.transform.scale(
@@ -20,17 +21,27 @@ class Trap(Entity):
         self.damage = 20
         self.interacted = 0
         self.type = "trap"
+        self.explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
+        self.oilSpill = pygame.image.load("textures\\OilSpill.png")
+        self.explosiveBarrel = pygame.transform.scale(
+            self.explosiveBarrel, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
+        self.oilSpill = pygame.transform.scale(
+            self.oilSpill, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Activate(self):
         return super().Activate()
 
-    def reScale(self, newSize):
+    def reScale(self):
         self.explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
         self.oilSpill = pygame.image.load("textures\\OilSpill.png")
         self.explosiveBarrel = pygame.transform.scale(
-            self.explosiveBarrel, (newSize, newSize)
+            self.explosiveBarrel, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
-        self.oilSpill = pygame.transform.scale(self.oilSpill, (newSize, newSize))
+        self.oilSpill = pygame.transform.scale(
+            self.oilSpill, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Update(self):
         self.Activate()
@@ -40,9 +51,7 @@ class Trap(Entity):
         picture = self.explosiveBarrel
         if self.interacted == 1:
             picture = self.oilSpill
-        return super().Draw(
-            picture, window, cameraOffset, self.explosiveBarrel.get_width()
-        )
+        return super().Draw(picture, window, cameraOffset)
 
     def OnCollide(self, other):
         if self.interacted == 0:

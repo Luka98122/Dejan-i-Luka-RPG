@@ -2,11 +2,14 @@ import pygame
 from Entity import Entity
 import random
 import CheatFile
+from globals import Globals
 
 
 class Fire(Entity):
     picture = None
-    sizeofEverything = CheatFile.sizeofEverything
+    sizeofEverything = Globals.sizeofEverything
+    picture = pygame.image.load("Textures\\Fire.png")
+    picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
 
     def __init__(self, pos, generation) -> None:
         super().__init__(pos)
@@ -16,15 +19,16 @@ class Fire(Entity):
         self.hp = randy.randint(30, 150)
         self.randomSpread = 10
         self.generation = generation
-        if Fire.picture == None:
-            Fire.picture = pygame.image.load("Textures\\Fire.png")
-            Fire.picture = pygame.transform.scale(
-                Fire.picture, (self.sizeofEverything, self.sizeofEverything)
-            )
+        self.picture = pygame.image.load("Textures\\Fire.png")
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
-    def reScale(self, newSize):
-        Fire.picture = pygame.image.load("Textures\\Fire.png")
-        Fire.picture = pygame.transform.scale(Fire.picture, (newSize, newSize))
+    def reScale(self):
+        self.picture = pygame.image.load("Textures\\Fire.png")
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Update(self):
         # if self.randy.randint(1,100) == self.randomSpread():
@@ -35,6 +39,5 @@ class Fire(Entity):
         other.takeDamage(self.dmg)
 
     def Draw(self, window, cameraOffset):
-        return super().Draw(
-            Fire.picture, window, cameraOffset, Fire.picture.get_width()
-        )
+        print(self.picture.get_width())
+        return super().Draw(self.picture, window, cameraOffset)

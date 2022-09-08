@@ -5,7 +5,7 @@ from Fire import Fire
 from Door import Door
 from HealthPotion import HealthPotion
 from Trap import Trap
-import CheatFile
+from globals import Globals
 
 
 class Player(Entity):
@@ -27,7 +27,7 @@ class Player(Entity):
         self.isPassable = isPassable
         self.addEntity = addEntity
         self.cameraOffset = cameraOffset
-        self.sizeofEverything = CheatFile.sizeofEverything
+        self.sizeofEverything = Globals.sizeofEverything
         self.inventory = [
             [HealthPotion(10, self), 1],
             [HealthPotion(10, self), 1],
@@ -51,20 +51,24 @@ class Player(Entity):
     def Heal(self, amount):
         self.hp = self.hp + amount
 
-    def reScale(self, newSize):
+    def reScale(self):
         self.picture = pygame.image.load("textures\\wizard.png")
-        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
         self.bloodpool = pygame.image.load("textures\\BloodPool.png")
-        self.bloodpool = pygame.transform.scale(self.bloodpool, (newSize, newSize))
+        self.bloodpool = pygame.transform.scale(
+            self.bloodpool, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def spell1(
         self,
     ):
         mousePos = pygame.mouse.get_pos()
         mousePos = list(mousePos)
-        mousePos[0] = mousePos[0] // self.sizeofEverything * self.sizeofEverything
-        mousePos[1] = mousePos[1] // self.sizeofEverything * self.sizeofEverything
+        mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
+        mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
 
         # window.blit(
         #    Door.OpenedDoor,
@@ -78,44 +82,44 @@ class Player(Entity):
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
                 and self.isPassable(
-                    int(self.pos.x) - 4 + int(mousePos[0]) // self.sizeofEverything,
-                    int(self.pos.y) - 4 + int(mousePos[1]) // self.sizeofEverything,
+                    int(self.pos.x) - 4 + int(mousePos[0]) // Globals.sizeofEverything,
+                    int(self.pos.y) - 4 + int(mousePos[1]) // Globals.sizeofEverything,
                 )
             ):
                 self.addEntity(
                     Fire(
                         pygame.Vector2(
-                            self.pos.x - 4 + mousePos[0] // self.sizeofEverything,
-                            self.pos.y - 4 + mousePos[1] // self.sizeofEverything,
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                         ),
                         5,
                     ),
                     1,
                 )
                 print(
-                    self.pos.x - 4 + mousePos[0] // self.sizeofEverything,
-                    self.pos.y - 4 + mousePos[1] // self.sizeofEverything,
+                    self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                    self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                     self.cameraOffset,
                 )
 
     def spell2(self):
         mousePos = pygame.mouse.get_pos()
         mousePos = list(mousePos)
-        mousePos[0] = mousePos[0] // 100 * 100
-        mousePos[1] = mousePos[1] // 100 * 100
+        mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
+        mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
         for event in pygame.event.get():
             if (
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
                 and self.isPassable(
-                    int(self.pos.x) - 4 + int(mousePos[0]) // 100,
-                    int(self.pos.y) - 4 + int(mousePos[1]) // 100,
+                    int(self.pos.x) - 4 + int(mousePos[0]) // Globals.sizeofEverything,
+                    int(self.pos.y) - 4 + int(mousePos[1]) // Globals.sizeofEverything,
                 )
             ):
                 self.addEntity(
                     Trap(
-                        self.pos.x - 4 + mousePos[0] // 100,
-                        self.pos.y - 4 + mousePos[1] // 100,
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                     ),
                     1,
                 )
@@ -200,7 +204,7 @@ class Player(Entity):
         picture = self.picture
         if self.hp <= 0:
             picture = self.bloodpool
-        return super().Draw(picture, window, cameraOffset, self.picture.get_width())
+        return super().Draw(picture, window, cameraOffset)
 
     def Move(self):
         global latestMove

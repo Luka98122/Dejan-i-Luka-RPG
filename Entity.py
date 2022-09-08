@@ -1,4 +1,5 @@
 import CheatFile
+from globals import Globals
 
 
 class Entity:
@@ -33,12 +34,20 @@ class Entity:
         #        if self.type == "chest":
         #            inventory.append([HealthPotion(10), 1])
 
-    def Draw(self, picture, window, cameraOffset, size):
+    def Draw(
+        self,
+        picture,
+        window,
+        cameraOffset,
+    ):
+
         window.blit(
             picture,
             (
-                self.pos.x * size - int(cameraOffset.x) * size,
-                self.pos.y * size - int(cameraOffset.y) * size,
+                self.pos.x * Globals.sizeofEverything
+                - int(cameraOffset.x) * Globals.sizeofEverything,
+                self.pos.y * Globals.sizeofEverything
+                - int(cameraOffset.y) * Globals.sizeofEverything,
             ),
         )
 

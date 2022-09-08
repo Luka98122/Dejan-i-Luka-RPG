@@ -3,12 +3,15 @@ import pygame
 from Enemy1 import Enemy1
 import random
 import CheatFile
+from globals import Globals
 
 
 class EnemySpawner(Entity):
-    sizeofEverything = CheatFile.sizeofEverything
+    sizeofEverything = Globals.sizeofEverything
     picture = pygame.image.load("textures\\EnemySorcerer.png")
-    picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
+    picture = pygame.transform.scale(
+        picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
 
     def __init__(self, pos, isPassable, addEntity) -> None:
         self.addEntity = addEntity
@@ -16,15 +19,19 @@ class EnemySpawner(Entity):
         self.cooldown = 100
         self.movementCooldown = 100
         super().__init__(pos)
-
-    def Draw(self, window, cameraOffset):
-        return super().Draw(
-            self.picture, window, cameraOffset, self.picture.get_width()
+        self.picture = pygame.image.load("textures\\EnemySorcerer.png")
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
 
-    def reScale(self, newSize):
+    def Draw(self, window, cameraOffset):
+        return super().Draw(self.picture, window, cameraOffset)
+
+    def reScale(self):
         self.picture = pygame.image.load("textures\\EnemySorcerer.png")
-        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Update(self):
         if self.hp > 0:

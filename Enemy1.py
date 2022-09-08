@@ -2,13 +2,11 @@ import pygame
 from Entity import Entity
 import random
 from Door import Door
-import CheatFile
+from globals import Globals
 
 
 class Enemy1(Entity):
-    sizeofEverything = CheatFile.sizeofEverything
-    picture = pygame.image.load("textures\\slime.png")
-    picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
+    sizeofEverything = Globals.sizeofEverything
 
     def __init__(self, pos, isPassable) -> None:
         super().__init__(pos)
@@ -18,20 +16,30 @@ class Enemy1(Entity):
         self.type = "Enemy1"
         self.movementCooldown = 100
         self.isPassable = isPassable
+        self.picture = pygame.image.load("textures\\slime.png")
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Update(self):
         # return super().Update()
         if self.hp > 0:
             self.Movement()
 
-    def reScale(self, newSize):
+    def reScale(self):
         self.picture = pygame.image.load("textures\\slime.png")
-        self.picture = pygame.transform.scale(self.picture, (newSize, newSize))
+        self.picture = pygame.transform.scale(
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        )
 
     def Draw(self, window, cameraOffset):
         picture = self.picture
         if self.hp > 0:
-            return super().Draw(picture, window, cameraOffset, self.picture.get_width())
+            return super().Draw(
+                picture,
+                window,
+                cameraOffset,
+            )
 
     def Movement(self):
         self.movementCooldown -= 1

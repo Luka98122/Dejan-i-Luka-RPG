@@ -14,7 +14,7 @@ from Trap import Trap
 from Chest import Chest
 from Enemy1 import Enemy1
 from EnemySpawner import EnemySpawner
-import CheatFile
+from globals import Globals
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -24,7 +24,7 @@ movementCooldown = 0
 entityList = []
 
 
-sizeOfEverything = CheatFile.sizeofEverything
+# sizeOfEverything = Globals.sizeofEverything
 
 currentMap = 1
 latestMove = pygame.Vector2(0, 0)
@@ -113,7 +113,16 @@ firesystem = FireSystem(gridMap)
 def imgSetup(str1):
     stringy = "Textures\\" + str1
     img = pygame.image.load(stringy)
-    img = pygame.transform.scale(img, (sizeOfEverything, sizeOfEverything))
+    img = pygame.transform.scale(
+        img, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
+    return img
+
+
+def PLimgSetup(img):
+    img = pygame.transform.scale(
+        img, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
     return img
 
 
@@ -136,6 +145,8 @@ def isPassable(
 ):
 
     # Prvo y pa x, jer prvo nadjemo visinu, i onda idemo kroz red, ovo nije bug
+    x = int(x)
+    y = int(y)
     if currentMap == 1:
         if gridMap[y][x] != "X" and gridMap[y][x] != "W":
             return True
@@ -288,16 +299,21 @@ def play():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     pause()
+
             if event.type == pygame.MOUSEWHEEL:
-                if event.y > 0:
+                if event.y > 0 and Globals.sizeofEverything != 100:
+                    Globals.sizeofEverything = Globals.sizeofEverything * 2
                     for entity in entityList:
-                        entity.reScale(sizeOfEverything * 2)
-                    sizeOfEverything = sizeOfEverything * 2
-                if event.y < 0:
+                        entity.reScale()
+                if event.y < 0 and Globals.sizeofEverything != 25:
+                    Globals.sizeofEverything = Globals.sizeofEverything / 2
                     for entity in entityList:
-                        entity.reScale(sizeOfEverything / 2)
-                    sizeOfEverything = sizeOfEverything / 2
-                print(event.x, event.y, "THIS")
+                        entity.reScale()
+                print(
+                    event.x,
+                    event.y,
+                )
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             sys.exit()
@@ -323,22 +339,22 @@ def play():
                 for j in range(len(gridMap[0])):
                     slika = 0
                     if gridMap[i][j] == "S":
-                        slika = sand
+                        slika = PLimgSetup(sand)
                     if gridMap[i][j] == "O":
-                        slika = Dirt
+                        slika = PLimgSetup(Dirt)
                     if gridMap[i][j] == "W":
-                        slika = water1
+                        slika = PLimgSetup(water1)
                     if gridMap[i][j] == "X":
-                        slika = StoneFloor
+                        slika = PLimgSetup(StoneFloor)
                     if gridMap[i][j] == "F":
-                        slika = WoodFloor
+                        slika = PLimgSetup(WoodFloor)
                     window.blit(
                         slika,
                         (
-                            j * sizeOfEverything
-                            - int(cameraOffset.x) * sizeOfEverything,
-                            i * sizeOfEverything
-                            - int(cameraOffset.y) * sizeOfEverything,
+                            j * Globals.sizeofEverything
+                            - int(cameraOffset.x) * Globals.sizeofEverything,
+                            i * Globals.sizeofEverything
+                            - int(cameraOffset.y) * Globals.sizeofEverything,
                         ),
                     )
         if currentMap == 2:
@@ -376,6 +392,8 @@ def play():
 
         # Draw all entities
         for entity in entityList:
+            # if type(entity) == Fire:
+            #    print("gotem")
             entity.Draw(window, cameraOffset)
 
         if player.hp >= 1:
@@ -390,6 +408,7 @@ def play():
             sys.exit()
         window.fill(pygame.Color("blue"))
         # print(f"EC: {len(entityList):4}")
+        # print(Globals.sizeofEverything)
 
 
 if __name__ == "__main__":
