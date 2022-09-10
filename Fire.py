@@ -19,15 +19,15 @@ class Fire(Entity):
         self.hp = randy.randint(30, 150)
         self.randomSpread = 10
         self.generation = generation
-        self.picture = pygame.image.load("Textures\\Fire.png")
-        self.picture = pygame.transform.scale(
-            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
-        )
+        # Fire.picture = pygame.image.load("Textures\\Fire.png")
+        # Fire.picture = pygame.transform.scale(
+        #    Fire.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        # )
 
     def reScale(self):
-        self.picture = pygame.image.load("Textures\\Fire.png")
-        self.picture = pygame.transform.scale(
-            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+        Fire.picture = pygame.image.load("Textures\\Fire.png")
+        Fire.picture = pygame.transform.scale(
+            Fire.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
 
     def Update(self):
@@ -39,5 +39,5 @@ class Fire(Entity):
         other.takeDamage(self.dmg)
 
     def Draw(self, window, cameraOffset):
-        print(self.picture.get_width())
-        return super().Draw(self.picture, window, cameraOffset)
+        # print(Fire.picture.get_width())
+        return super().Draw(Fire.picture, window, cameraOffset)

@@ -14,6 +14,8 @@ from Trap import Trap
 from Chest import Chest
 from Enemy1 import Enemy1
 from EnemySpawner import EnemySpawner
+from Portal import Portal
+
 from globals import Globals
 
 collisionDetector = CollisionDetector()
@@ -21,7 +23,7 @@ deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 0
-entityList = []
+entityList = Globals.entityList
 
 
 # sizeOfEverything = Globals.sizeofEverything
@@ -198,18 +200,21 @@ def addEntity(entity, map):
 # =========================DOOR============================#
 
 # =========================ENTITIES========================#
-addEntity(Chest(2, 1), 1)
-addEntity(Door(17, 18), 1)
-addEntity(Chest(15, 14), 1)
-addEntity(Chest(33, 11), 1)
-addEntity(Trap(8, 5), 1)
-addEntity(Trap(13, 20), 1)
+# addEntity(Chest(2, 1), 1)
+# addEntity(Door(17, 18), 1)
+# addEntity(Chest(15, 14), 1)
+# addEntity(Chest(33, 11), 1)
+# addEntity(Trap(8, 5), 1)
+# addEntity(Trap(13, 20), 1)
+#
+# addEntity(Trap(1, 5), 1)
+# addEntity(Trap(2, 5), 1)
+# addEntity(Trap(3, 5), 1)
+# addEntity(Trap(4, 5), 1)
+# addEntity(Trap(5, 5), 1)
 
-addEntity(Trap(1, 5), 1)
-addEntity(Trap(2, 5), 1)
-addEntity(Trap(3, 5), 1)
-addEntity(Trap(4, 5), 1)
-addEntity(Trap(5, 5), 1)
+# addEntity(Portal(1, 2, 0), 1)
+# addEntity(Portal(1, 6, 1), 1)
 
 
 addEntity(Door(32, 16), 2)
@@ -217,9 +222,11 @@ addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
-addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
-addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
-addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
+
+
+#   addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
+#   addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
+#   addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 # addEntity(Fire(pygame.Vector2(1, 1)), 1)
 
 # =========================PLAYER==========================#
@@ -324,7 +331,7 @@ def play():
         firesystem.Update(entityList, frameCounter)
 
         for i in range(len(entityList)):
-            if entityList[i].type == "chest" and entityList[i].interacted == 1:
+            if type(entityList[i]) == Chest and entityList[i].interacted == 1:
                 score += 1
         if keys[pygame.K_p]:
             pause()
@@ -386,6 +393,9 @@ def play():
         i = 0
         while i < len(entityList):
             if entityList[i].hp <= 0:
+                if type(entityList[i]) == Portal:
+                    Globals.portalsPlaced[entityList[i].ID] = 0
+                    print("did it")
                 entityList.remove(entityList[i])
                 i -= 1
             i += 1
@@ -409,6 +419,7 @@ def play():
         window.fill(pygame.Color("blue"))
         # print(f"EC: {len(entityList):4}")
         # print(Globals.sizeofEverything)
+        print(cameraOffset)
 
 
 if __name__ == "__main__":

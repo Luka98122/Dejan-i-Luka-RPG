@@ -6,6 +6,7 @@ from Door import Door
 from HealthPotion import HealthPotion
 from Trap import Trap
 from globals import Globals
+from Portal import Portal
 
 
 class Player(Entity):
@@ -33,6 +34,7 @@ class Player(Entity):
             [HealthPotion(10, self), 1],
             [HealthPotion(10, self), 1],
         ]
+        self.portalCD = 200
         self.spellSlot = 1
         self.picture = pygame.image.load("textures\\wizard.png")
         self.picture = pygame.transform.scale(
@@ -125,29 +127,86 @@ class Player(Entity):
                 )
 
     def spell3(self):
+        # print("entered")
         mousePos = pygame.mouse.get_pos()
         mousePos = list(mousePos)
-        mousePos[0] = mousePos[0] // 100 * 100
-        mousePos[1] = mousePos[1] // 100 * 100
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_o]:
-            self.addEntity(
-                Portal(
-                    self.pos.x - 4 + mousePos[0] // 100,
-                    self.pos.y - 4 + mousePos[1] // 100,
-                    0,
-                ),
-                1,
-            )
-        if keys[pygame.K_p]:
-            self.addEntity(
-                Portal(
-                    self.pos.x - 4 + mousePos[0] // 100,
-                    self.pos.y - 4 + mousePos[1] // 100,
-                    1,
-                ),
-                1,
-            )
+        mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
+        mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if Globals.portalsPlaced[0] == 0:
+                    self.addEntity(
+                        Portal(
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                            0,
+                        ),
+                        1,
+                    )
+                    Globals.portalList[0] = Portal(
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        0,
+                    )
+                    Globals.portalsPlaced[0] = 1
+                # print("added portal 0")
+                else:
+                    for entity in Globals.entityList:
+                        if type(entity) == Portal and entity.ID == 0:
+                            Globals.entityList.remove(entity)
+                            break
+
+                    self.addEntity(
+                        Portal(
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                            0,
+                        ),
+                        1,
+                    )
+                    Globals.portalList[0] = Portal(
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        0,
+                    )
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                if Globals.portalsPlaced[1] == 0:
+                    self.addEntity(
+                        Portal(
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                            1,
+                        ),
+                        1,
+                    )
+                    Globals.portalList[1] = Portal(
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        1,
+                    )
+                    Globals.portalsPlaced[1] = 1
+                # print("added portal 1")
+
+                else:
+                    for entity in Globals.entityList:
+                        if type(entity) == Portal and entity.ID == 1:
+                            Globals.entityList.remove(entity)
+                            break
+
+                    self.addEntity(
+                        Portal(
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                            1,
+                        ),
+                        1,
+                    )
+                    Globals.portalList[1] = Portal(
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        1,
+                    )
 
     def Activations(self, entityList):
         for i in range(len(entityList)):
@@ -188,10 +247,13 @@ class Player(Entity):
             self.spellSlot = 1
         if keys[pygame.K_2]:
             self.spellSlot = 2
+        if keys[pygame.K_3]:
+            self.spellSlot = 3
 
     def Update(self):
         if self.hp > 0:
             self.movementCooldown = self.movementCooldown - 1
+            self.portalCD = self.portalCD - 1
             self.Move()
             self.useInventory()
             self.selectSpell()
@@ -199,6 +261,8 @@ class Player(Entity):
                 self.spell1()
             if self.spellSlot == 2:
                 self.spell2()
+            if self.spellSlot == 3:
+                self.spell3()
 
     def Draw(self, window, cameraOffset):
         picture = self.picture
