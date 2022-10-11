@@ -3,3 +3,4 @@ class Globals:
     portalsPlaced = [0, 0]
     entityList = []
     portalList = [0, 0]
+    currentMap = 0

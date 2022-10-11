@@ -43,7 +43,7 @@ class Portal(Entity):
         if other.type == "player":
             if other.portalCD <= 0:
                 other.pos = Globals.portalList[self.ID - 1].pos
-                other.portalCD = 500
+                other.portalCD = 250
                 other.cameraOffset.x -= (
                     Globals.portalList[self.ID].pos.x
                     - Globals.portalList[self.ID - 1].pos.x

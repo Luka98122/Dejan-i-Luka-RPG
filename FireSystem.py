@@ -2,6 +2,9 @@ import random
 import pygame
 from Entity import Entity
 from Fire import Fire
+from globals import Globals
+from map1 import gridMap1
+from map2 import gridMap2
 
 
 class FireSystem:
@@ -16,6 +19,19 @@ class FireSystem:
                 self.mapList[i].append(-9999)
 
     def Update(self, entityList, frameCounter):
+        if Globals.currentMap == 0:
+            self.mapList = []
+            for i in range(31):
+                self.mapList.append([])
+                for j in range(69):
+                    self.mapList[i].append(-9999)
+        if Globals.currentMap == 1:
+            self.mapList = []
+            for i in range(39):
+                self.mapList.append([])
+                for j in range(79):
+                    self.mapList[i].append(-9999)
+
         self.UpdateCellMap(entityList, frameCounter)
         for entity in entityList:
             if isinstance(entity, Fire):
