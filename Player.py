@@ -19,8 +19,21 @@ class Player(Entity):
     type = "player"
     isPassable = 0
     addEntity = 0
-    picture = 0
     bloodpool = 0
+
+    picture = pygame.image.load("textures\\wizard.png")
+    picture = pygame.transform.scale(
+        picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
+    originalPic = picture
+
+    bloodpool = pygame.image.load("textures\\BloodPool.png")
+    bloodpool = pygame.transform.scale(
+        picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
+
+    originalPictures = [picture, bloodpool]
+    pictures = [picture, bloodpool]
 
     def __init__(self, pos, isPassable, addEntity, cameraOffset) -> None:
         super().__init__(pos)
@@ -38,12 +51,12 @@ class Player(Entity):
         self.spellSlot = 1
         self.picture = pygame.image.load("textures\\wizard.png")
         self.picture = pygame.transform.scale(
-            self.picture, (self.sizeofEverything, self.sizeofEverything)
+            self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
 
         self.bloodpool = pygame.image.load("textures\\BloodPool.png")
         self.bloodpool = pygame.transform.scale(
-            self.bloodpool, (self.sizeofEverything, self.sizeofEverything)
+            self.bloodpool, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
 
     startx = 4  # * sizeofEverything // 100
@@ -265,9 +278,9 @@ class Player(Entity):
                 self.spell3()
 
     def Draw(self, window, cameraOffset):
-        picture = self.picture
+        picture = Player.pictures[0]
         if self.hp <= 0:
-            picture = self.bloodpool
+            picture = Player.pictures[1]
         return super().Draw(picture, window, cameraOffset)
 
     def Move(self):

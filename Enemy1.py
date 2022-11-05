@@ -7,6 +7,13 @@ from globals import Globals
 
 class Enemy1(Entity):
     sizeofEverything = Globals.sizeofEverything
+    picture = pygame.image.load("textures\\slime.png")
+    picture = pygame.transform.scale(
+        picture, (Globals.sizeofEverything, Globals.sizeofEverything)
+    )
+    originalPic = picture
+    originalPictures = [picture]
+    pictures = [picture]
 
     def __init__(self, pos, isPassable) -> None:
         super().__init__(pos)
@@ -33,7 +40,7 @@ class Enemy1(Entity):
         )
 
     def Draw(self, window, cameraOffset):
-        picture = self.picture
+        picture = Enemy1.pictures[0]
         if self.hp > 0:
             return super().Draw(
                 picture,

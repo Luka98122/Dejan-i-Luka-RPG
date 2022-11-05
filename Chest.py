@@ -11,6 +11,11 @@ class Chest(Entity):
     OpenedChest1 = pygame.transform.scale(
         OpenedChest1, (sizeofEverything, sizeofEverything)
     )
+    picture = Chest1
+    originalPic = Chest1
+    originalPic2 = OpenedChest1
+    pictures = [Chest1, OpenedChest1]
+    originalPictures = [Chest1, OpenedChest1]
 
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
@@ -43,10 +48,10 @@ class Chest(Entity):
         return super().Update()
 
     def Draw(self, window, cameraOffset):
-        picture = self.Chest1
+        self.picture = self.pictures[0]
         if self.interacted == 1:
-            picture = self.OpenedChest1
-        return super().Draw(picture, window, cameraOffset)
+            self.picture = self.pictures[1]
+        return super().Draw(self.picture, window, cameraOffset)
 
     def OnCollide(self, other):
         if other.type == "player":

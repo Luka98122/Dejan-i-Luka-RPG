@@ -10,6 +10,9 @@ class Fire(Entity):
     sizeofEverything = Globals.sizeofEverything
     picture = pygame.image.load("Textures\\Fire.png")
     picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
+    originalPic = picture
+    originalPictures = [picture]
+    pictures = [picture]
 
     def __init__(self, pos, generation) -> None:
         super().__init__(pos)
@@ -40,4 +43,4 @@ class Fire(Entity):
 
     def Draw(self, window, cameraOffset):
         # print(Fire.picture.get_width())
-        return super().Draw(Fire.picture, window, cameraOffset)
+        return super().Draw(Fire.pictures[0], window, cameraOffset)

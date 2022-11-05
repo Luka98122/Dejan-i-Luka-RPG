@@ -17,8 +17,23 @@ from Enemy1 import Enemy1
 from EnemySpawner import EnemySpawner
 from Portal import Portal
 from globals import Globals
+from FontSheet import FontSheet
 from map1 import gridMap1
 from map2 import gridMap2
+
+
+listOfClassesToScale = [
+    Fire,
+    Player,
+    Door,
+    Trap,
+    Chest,
+    Enemy1,
+    EnemySpawner,
+    Portal,
+]
+
+sat = pygame.time.Clock()
 
 collisionDetector = CollisionDetector()
 deathCooldown = 100
@@ -26,7 +41,8 @@ cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 0
 entityList = Globals.entityList
-
+fontSheet = FontSheet()
+fontSheet.getDimensions()
 
 maps = [gridMap1, gridMap2]
 
@@ -116,6 +132,15 @@ def addEntity(entity, map):
         entityList2.append(entity)
 
 
+def ScaleEverything():
+    for thing in listOfClassesToScale:
+        for i in range(len(thing.pictures)):
+            thing.pictures[i] = pygame.transform.scale(
+                thing.originalPictures[i],
+                (Globals.sizeofEverything, Globals.sizeofEverything),
+            )
+
+
 # for i in range(len(entityList)):
 #    print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
@@ -128,8 +153,9 @@ addEntity(Chest(2, 1), 1)
 addEntity(Door(17, 18), 1)
 addEntity(Chest(15, 14), 1)
 addEntity(Chest(33, 11), 1)
-addEntity(MapDoor(68, 4, 1), 1)
-addEntity(MapDoor(0, 4, 0), 1)
+# addEntity(MapDoor(68, 4, 1), 1) WIP
+# addEntity(MapDoor(0, 4, 0), 1) WIP
+
 
 addEntity(Door(32, 16), 2)
 addEntity(Door(16, 42), 2)
@@ -138,9 +164,9 @@ addEntity(Door(33, 19), 2)
 # =========================ENTITIES========================#
 
 
-# addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
-# addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
-# addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
+addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
+addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
+addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 
 
 # =========================PLAYER==========================#
@@ -226,12 +252,10 @@ def play():
             if event.type == pygame.MOUSEWHEEL:
                 if event.y > 0 and Globals.sizeofEverything != 100:
                     Globals.sizeofEverything = Globals.sizeofEverything * 2
-                    for entity in entityList:
-                        entity.reScale()
+                    ScaleEverything()
                 if event.y < 0 and Globals.sizeofEverything != 25:
                     Globals.sizeofEverything = Globals.sizeofEverything / 2
-                    for entity in entityList:
-                        entity.reScale()
+                    ScaleEverything()
                 print(
                     event.x,
                     event.y,
@@ -282,6 +306,7 @@ def play():
             if entityList[i].hp <= 0:
                 if type(entityList[i]) == Portal:
                     Globals.portalsPlaced[entityList[i].ID] = 0
+                    Globals.portalList[entityList[i].ID] = 0
                     print("did it")
                 entityList.remove(entityList[i])
                 i -= 1
@@ -292,6 +317,11 @@ def play():
             # if type(entity) == Fire:
             #    print("gotem")
             entity.Draw(window, cameraOffset)
+
+        # fontSheet.drawChar("a", [100, 100], window)
+        # fontSheet.drawChar("b", [150, 150], window)
+        # fontSheet.drawChar("c", [200, 200], window)
+        fontSheet.drawString("x w y z q m n o r", [100, 100], window)
 
         if player.hp >= 1:
             player.Update()
@@ -307,6 +337,8 @@ def play():
         # print(f"EC: {len(entityList):4}")
         # print(Globals.sizeofEverything)
         print(cameraOffset)
+        sat.tick(60)
+        print(sat)
 
 
 if __name__ == "__main__":

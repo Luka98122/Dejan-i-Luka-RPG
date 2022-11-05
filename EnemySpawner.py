@@ -12,6 +12,9 @@ class EnemySpawner(Entity):
     picture = pygame.transform.scale(
         picture, (Globals.sizeofEverything, Globals.sizeofEverything)
     )
+    originalPic = picture
+    originalPictures = [picture]
+    pictures = [picture]
 
     def __init__(self, pos, isPassable, addEntity) -> None:
         self.addEntity = addEntity
@@ -25,7 +28,7 @@ class EnemySpawner(Entity):
         )
 
     def Draw(self, window, cameraOffset):
-        return super().Draw(self.picture, window, cameraOffset)
+        return super().Draw(EnemySpawner.pictures[0], window, cameraOffset)
 
     def reScale(self):
         self.picture = pygame.image.load("textures\\EnemySorcerer.png")

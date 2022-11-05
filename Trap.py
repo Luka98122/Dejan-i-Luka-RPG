@@ -13,7 +13,12 @@ class Trap(Entity):
         explosiveBarrel, (sizeofEverything, sizeofEverything)
     )
     oilSpill = pygame.transform.scale(oilSpill, (sizeofEverything, sizeofEverything))
+    oilSpill = pygame.transform.scale(oilSpill, (sizeofEverything, sizeofEverything))
     type = "trap"
+    picture = oilSpill
+    originalPic = picture
+    originalPictures = [explosiveBarrel, oilSpill]
+    pictures = [explosiveBarrel, oilSpill]
 
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
@@ -48,10 +53,10 @@ class Trap(Entity):
         return super().Update()
 
     def Draw(self, window, cameraOffset):
-        picture = self.explosiveBarrel
+        self.picture = Trap.pictures[0]
         if self.interacted == 1:
-            picture = self.oilSpill
-        return super().Draw(picture, window, cameraOffset)
+            self.picture = Trap.pictures[1]
+        return super().Draw(self.picture, window, cameraOffset)
 
     def OnCollide(self, other):
         if self.interacted == 0:

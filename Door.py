@@ -14,6 +14,11 @@ class Door(Entity):
     OpenedDoor = pygame.transform.scale(
         OpenedDoor, (sizeofEverything, sizeofEverything)
     )
+    picture = OpenedDoor
+    originalPic = ClosedDoor
+    originalPic2 = OpenedDoor
+    originalPictures = [OpenedDoor, ClosedDoor]
+    pictures = [picture, ClosedDoor]
 
     def __init__(self, x, y) -> None:
         pos = pygame.Vector2(x, y)
@@ -39,10 +44,10 @@ class Door(Entity):
         )
 
     def Draw(self, window, cameraOffset):
-        slika = self.ClosedDoor
+        self.picture = Door.pictures[1]
         if self.interacted == 1:
-            slika = self.OpenedDoor
-        return super().Draw(slika, window, cameraOffset)
+            self.picture = Door.pictures[0]
+        return super().Draw(self.picture, window, cameraOffset)
 
     def OnCollide(self, other):
         pass
