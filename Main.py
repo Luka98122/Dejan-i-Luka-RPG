@@ -18,6 +18,7 @@ from EnemySpawner import EnemySpawner
 from Portal import Portal
 from globals import Globals
 from FontSheet import FontSheet
+from DialogueSystem import DialogueSystem
 from map1 import gridMap1
 from map2 import gridMap2
 
@@ -43,7 +44,8 @@ movementCooldown = 0
 entityList = Globals.entityList
 fontSheet = FontSheet()
 fontSheet.getDimensions()
-
+dialogueSystem = DialogueSystem()
+dialogueSystem.addWindow(600, 180, pygame.Vector2(100, 100), "text window")
 maps = [gridMap1, gridMap2]
 
 
@@ -105,6 +107,8 @@ def isPassable(
 
 
 ##### Entities (chests, enemies, missiles)
+
+textBubble = pygame.image.load("Textures\\TextBox1.png")
 
 
 class Button:
@@ -317,11 +321,11 @@ def play():
             # if type(entity) == Fire:
             #    print("gotem")
             entity.Draw(window, cameraOffset)
+        dialogueSystem.draw(window)
 
-        # fontSheet.drawChar("a", [100, 100], window)
-        # fontSheet.drawChar("b", [150, 150], window)
-        # fontSheet.drawChar("c", [200, 200], window)
-        fontSheet.drawString("x w y z q m n o r", [100, 100], window)
+        # fontSheet.drawString("flockland", [100, 100], window)
+        # fontSheet.drawString(" drumroll please", [100, 200], window)
+        # fontSheet.drawString("wrote this", [100, 300], window)
 
         if player.hp >= 1:
             player.Update()
