@@ -83,6 +83,17 @@ class FontSheet:
             (info[1], info[0] * 40, info[2] - info[1], 32),
         )
 
+    def getLenOfString(myString):
+        res = 0
+        for char in myString:
+            if char == " ":
+                res += 20
+                continue
+            index = FontSheet.abc.index(char)
+            info = FontSheet.charDimensions[index]
+            res += info[2] - info[1] + 10
+        return res
+
     def drawString(self, string, pos, window):
         sofar = 0
         for i in range(len(string)):

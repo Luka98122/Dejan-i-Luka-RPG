@@ -45,7 +45,11 @@ entityList = Globals.entityList
 fontSheet = FontSheet()
 fontSheet.getDimensions()
 dialogueSystem = DialogueSystem()
-dialogueSystem.addWindow(600, 180, pygame.Vector2(100, 100), "text window")
+dialogueSystem.addWindow(pygame.Vector2(0, 100), "start game")
+dialogueSystem.addWindow(pygame.Vector2(0, 200), "enter your name")
+dialogueSystem.addWindow(pygame.Vector2(0, 300), "have fun and")
+dialogueSystem.addWindow(pygame.Vector2(0, 400), "try not to die")
+
 maps = [gridMap1, gridMap2]
 
 
@@ -329,7 +333,7 @@ def play():
 
         if player.hp >= 1:
             player.Update()
-        player.Draw(window, cameraOffset)
+        # player.Draw(window, cameraOffset)
         hud.Draw()
         if player.hp <= 0:
             deathCooldown -= 1
