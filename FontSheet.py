@@ -1,10 +1,12 @@
 import pygame
 from PIL import Image
+import time
 
 
 class FontSheet:
     textSheetCaps = pygame.image.load("Textures\\TextFontSheet.png")
-    fontSheets = [textSheetCaps]
+    textSheetLowerCase = pygame.image.load("Textures\\textFontSheetLowerCase.png")
+    fontSheets = [textSheetCaps, textSheetLowerCase]
     charsInfo = []
     abc = "abcdefghijklmnopqrstuvwxyz"
 
@@ -13,10 +15,10 @@ class FontSheet:
 
     charDimensions = []
 
-    def getDimensions(self):
+    def getDimensions(self, fontSheet):
         height = 32
         pixelCursor = pygame.Vector2(0, 0)
-        image = Image.open("Textures\\TextFontSheet.png")
+        image = Image.open(fontSheet)
         pixels = image.load()
         x = 0
         layer = 0
@@ -74,11 +76,18 @@ class FontSheet:
 
         print(FontSheet.charsInfo)
 
-    def drawChar(self, char, pos, window):
+    def drawChar(
+        self,
+        char,
+        pos,
+        window,
+    ):
+        if char == " ":
+            return
         index = FontSheet.abc.index(char)
         info = FontSheet.charDimensions[index]
         window.blit(
-            FontSheet.textSheetCaps,
+            FontSheet.fontSheets[0],
             pygame.Rect(pos[0], pos[1], info[2] - info[1], 32),
             (info[1], info[0] * 40, info[2] - info[1], 32),
         )
@@ -94,13 +103,22 @@ class FontSheet:
             res += info[2] - info[1] + 10
         return res
 
-    def drawString(self, string, pos, window):
+    def drawString(self, string, pos, window, aditionalParameters, firstDraw):
         sofar = 0
-        for i in range(len(string)):
+        i = 0
+        while i < len(string):
             if string[i] == " ":
                 sofar += 20
                 continue
             index = FontSheet.abc.index(string[i])
             info = FontSheet.charDimensions[index]
-            FontSheet.drawChar(self, string[i], [pos[0] + sofar, pos[1]], window)
+            FontSheet.drawChar(
+                self,
+                string[i],
+                [pos[0] + sofar, pos[1]],
+                window,
+                aditionalParameters,
+                firstDraw,
+            )
             sofar += info[2] - info[1] + 10
+            i += 1

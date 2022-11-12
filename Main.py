@@ -14,6 +14,7 @@ from Item import Item
 from Trap import Trap
 from Chest import Chest
 from Enemy1 import Enemy1
+from NPC import NPC
 from EnemySpawner import EnemySpawner
 from Portal import Portal
 from globals import Globals
@@ -32,10 +33,11 @@ listOfClassesToScale = [
     Enemy1,
     EnemySpawner,
     Portal,
+    NPC,
 ]
 
 sat = pygame.time.Clock()
-
+abc = "abcdefghijklmnopqrstuvwxyz"
 collisionDetector = CollisionDetector()
 deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
@@ -43,12 +45,12 @@ window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
 movementCooldown = 0
 entityList = Globals.entityList
 fontSheet = FontSheet()
-fontSheet.getDimensions()
+fontSheet.getDimensions("Textures\\TextFontSheet.png")
 dialogueSystem = DialogueSystem()
-dialogueSystem.addWindow(pygame.Vector2(0, 100), "start game")
-dialogueSystem.addWindow(pygame.Vector2(0, 200), "enter your name")
-dialogueSystem.addWindow(pygame.Vector2(0, 300), "have fun and")
-dialogueSystem.addWindow(pygame.Vector2(0, 400), "try not to die")
+# dialogueSystem.addWindow(pygame.Vector2(20, 100), "start game", [2])
+# dialogueSystem.addWindow(pygame.Vector2(20, 200), "enter your name", [5])
+# dialogueSystem.addWindow(pygame.Vector2(20, 300), "have fun and", [3])
+# dialogueSystem.addWindow(pygame.Vector2(20, 400), "try not to die", [4])
 
 maps = [gridMap1, gridMap2]
 
@@ -101,6 +103,10 @@ def isPassable(
     # Prvo y pa x, jer prvo nadjemo visinu, i onda idemo kroz red, ovo nije bug
     x = int(x)
     y = int(y)
+    if y >= len(currentMap) or y < 0:
+        return False
+    if x >= len(currentMap[0]) or x < 0:
+        return False
     if currentMap[y][x] != "X" and currentMap[y][x] != "W":
         return True
     else:
@@ -153,7 +159,13 @@ def ScaleEverything():
 #    print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
 
-
+player = Player(
+    pygame.Vector2(Player.startx, Player.starty),
+    isPassable,
+    addEntity,
+    cameraOffset,
+)
+entityList.append(player)
 # =========================DOOR============================#
 
 # =========================ENTITIES========================#
@@ -169,6 +181,8 @@ addEntity(Door(32, 16), 2)
 addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
+addEntity(NPC(pygame.Vector2(20, 17), ["leave me alone"], isPassable), 1)
+
 # =========================ENTITIES========================#
 
 
@@ -176,17 +190,9 @@ addEntity(Enemy1(pygame.Vector2(11, 5), isPassable), 1)
 addEntity(Enemy1(pygame.Vector2(10, 5), isPassable), 1)
 addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 
-
 # =========================PLAYER==========================#
 
 
-player = Player(
-    pygame.Vector2(Player.startx, Player.starty),
-    isPassable,
-    addEntity,
-    cameraOffset,
-)
-entityList.append(player)
 # =========================PLAYER==========================#
 
 
@@ -242,13 +248,17 @@ def play():
     global window
     global sizeOfEverything
     global firesystem
-
     frameCounter = 0
-
+    dialogueString = ""
     while True:
+        Globals.events = pygame.event.get()
         frameCounter += 1
         currentMap = maps[Globals.currentMap]
-        for event in pygame.event.get():
+        if len(Globals.events) > 0:
+            print(Globals.events)
+        for event in Globals.events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                print("DOWN")
             if event.type == pygame.QUIT:
                 pygame.display.quit()
                 pygame.quit()
@@ -268,11 +278,9 @@ def play():
                     event.x,
                     event.y,
                 )
-
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             sys.exit()
-
         # System update
         collisionDetector.Update(entityList)
         firesystem.Update(entityList, frameCounter)
@@ -282,6 +290,18 @@ def play():
         if keys[pygame.K_m]:
             currentMap = gridMap2
             firesystem = FireSystem(currentMap)
+        myKeys = []
+        for key in keys:
+            if key == True:
+                if keys.index(key) - 4 < 26:
+                    myKeys.append(abc[keys.index(key) - 4])
+        for key in myKeys:
+            dialogueString += key
+        if keys[pygame.K_RETURN]:
+            dialogueSystem.addWindow(
+                pygame.Vector2(20, 300), dialogueString, [8, 150], "unknown"
+            )
+            dialogueString = ""
         for i in range(len(currentMap)):
             for j in range(len(currentMap[0])):
                 slika = 0
@@ -325,16 +345,13 @@ def play():
             # if type(entity) == Fire:
             #    print("gotem")
             entity.Draw(window, cameraOffset)
-        dialogueSystem.draw(window)
-
-        # fontSheet.drawString("flockland", [100, 100], window)
-        # fontSheet.drawString(" drumroll please", [100, 200], window)
-        # fontSheet.drawString("wrote this", [100, 300], window)
 
         if player.hp >= 1:
             player.Update()
+        dialogueSystem.update()
         # player.Draw(window, cameraOffset)
         hud.Draw()
+        dialogueSystem.draw(window)
         if player.hp <= 0:
             deathCooldown -= 1
         pygame.display.flip()
@@ -344,9 +361,9 @@ def play():
         window.fill(pygame.Color("blue"))
         # print(f"EC: {len(entityList):4}")
         # print(Globals.sizeofEverything)
-        print(cameraOffset)
-        sat.tick(60)
-        print(sat)
+        # print(cameraOffset)
+        # sat.tick(60)
+        # print(sat)
 
 
 if __name__ == "__main__":

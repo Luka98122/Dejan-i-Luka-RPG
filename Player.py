@@ -20,7 +20,7 @@ class Player(Entity):
     isPassable = 0
     addEntity = 0
     bloodpool = 0
-
+    spellCooldown = 50
     picture = pygame.image.load("textures\\wizard.png")
     picture = pygame.transform.scale(
         picture, (Globals.sizeofEverything, Globals.sizeofEverything)
@@ -92,7 +92,9 @@ class Player(Entity):
         #        mousePos[1] // 100 * 100,
         #    ),
         # )
-        for event in pygame.event.get():
+        if len(Globals.events) > 0:
+            print(Globals.events)
+        for event in Globals.events:
             if (
                 event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
@@ -122,22 +124,28 @@ class Player(Entity):
         mousePos = list(mousePos)
         mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
         mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
-        for event in pygame.event.get():
-            if (
-                event.type == pygame.MOUSEBUTTONDOWN
-                and event.button == 1
-                and self.isPassable(
-                    int(self.pos.x) - 4 + int(mousePos[0]) // Globals.sizeofEverything,
-                    int(self.pos.y) - 4 + int(mousePos[1]) // Globals.sizeofEverything,
-                )
-            ):
-                self.addEntity(
-                    Trap(
-                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                    ),
-                    1,
-                )
+        for event in Globals.events:
+            if self.spellCooldown < 0:
+                if (
+                    event.type == pygame.MOUSEBUTTONDOWN
+                    and event.button == 1
+                    and self.isPassable(
+                        int(self.pos.x)
+                        - 4
+                        + int(mousePos[0]) // Globals.sizeofEverything,
+                        int(self.pos.y)
+                        - 4
+                        + int(mousePos[1]) // Globals.sizeofEverything,
+                    )
+                ):
+                    self.addEntity(
+                        Trap(
+                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        ),
+                        1,
+                    )
+                    self.spellCooldown = 20
 
     def spell3(self):
         # print("entered")
@@ -145,7 +153,7 @@ class Player(Entity):
         mousePos = list(mousePos)
         mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
         mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
-        for event in pygame.event.get():
+        for event in Globals.events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if Globals.portalsPlaced[0] == 0:
                     self.addEntity(
@@ -267,6 +275,7 @@ class Player(Entity):
         if self.hp > 0:
             self.movementCooldown = self.movementCooldown - 1
             self.portalCD = self.portalCD - 1
+            self.spellCooldown -= 1
             self.Move()
             self.useInventory()
             self.selectSpell()
