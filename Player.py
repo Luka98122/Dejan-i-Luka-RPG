@@ -103,21 +103,27 @@ class Player(Entity):
                     int(self.pos.y) - 4 + int(mousePos[1]) // Globals.sizeofEverything,
                 )
             ):
-                self.addEntity(
-                    Fire(
-                        pygame.Vector2(
-                            self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                            self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                if self.spellCooldown < 0:
+                    self.addEntity(
+                        Fire(
+                            pygame.Vector2(
+                                self.pos.x
+                                - 4
+                                + mousePos[0] // Globals.sizeofEverything,
+                                self.pos.y
+                                - 4
+                                + mousePos[1] // Globals.sizeofEverything,
+                            ),
+                            5,
                         ),
-                        5,
-                    ),
-                    1,
-                )
-                print(
-                    self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                    self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                    self.cameraOffset,
-                )
+                        1,
+                    )
+                    print(
+                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
+                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
+                        self.cameraOffset,
+                    )
+                    self.spellCooldown = 20
 
     def spell2(self):
         mousePos = pygame.mouse.get_pos()
