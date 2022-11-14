@@ -92,8 +92,6 @@ class Player(Entity):
         #        mousePos[1] // 100 * 100,
         #    ),
         # )
-        if len(Globals.events) > 0:
-            print(Globals.events)
         for event in Globals.events:
             if (
                 event.type == pygame.MOUSEBUTTONDOWN

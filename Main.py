@@ -181,7 +181,12 @@ addEntity(Door(32, 16), 2)
 addEntity(Door(16, 42), 2)
 addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
-addEntity(NPC(pygame.Vector2(20, 17), ["leave me alone"], isPassable), 1)
+addEntity(
+    NPC(
+        pygame.Vector2(20, 17), "merchant1", ["get a heart", "lose a heart"], isPassable
+    ),
+    1,
+)
 
 # =========================ENTITIES========================#
 
@@ -254,8 +259,6 @@ def play():
         Globals.events = pygame.event.get()
         frameCounter += 1
         currentMap = maps[Globals.currentMap]
-        if len(Globals.events) > 0:
-            print(Globals.events)
         for event in Globals.events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 print("DOWN")

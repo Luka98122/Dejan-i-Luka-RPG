@@ -9,13 +9,9 @@ fontSheet.getDimensions("Textures\\TextFontSheet.png")
 class TextWindow:
     textBox = pygame.image.load("textures\\TextBox1.png")
 
-    ICON_Merchant1 = pygame.image.load("textures\\ICONS\\Merchant1ICON.png")
-    ICON_Merchant1 = pygame.transform.scale(ICON_Merchant1, (120, 120))
-
-    ICON_Unkown = pygame.image.load("textures\\ICONS\\UnknownICON.png")
-    ICON_Unkown = pygame.transform.scale(ICON_Unkown, (120, 120))
-
-    def __init__(self, width, height, pos, text, aditionalParameters, speaker):
+    def __init__(
+        self, width, height, pos, text, aditionalParameters, action, actionParams
+    ):
         self.image = pygame.transform.scale(TextWindow.textBox, (width, height))
         self.x = int(pos.x)
         self.y = int(pos.y)
@@ -31,22 +27,14 @@ class TextWindow:
         self.lifeSpan = aditionalParameters[1]
         self.currentFrame = 0
         self.curentChar = 0
-        self.speaker = speaker
+        self.action = action
+        self.actionParams = actionParams
 
     def update(self):
         pass
 
     def draw(self, window):
         # SPEAKER
-        if self.speaker == "merchant1":
-            window.blit(
-                TextWindow.ICON_Merchant1, pygame.Rect(self.x, self.y - 120, 120, 120)
-            )
-
-        if self.speaker == "unknown":
-            window.blit(
-                TextWindow.ICON_Unkown, pygame.Rect(self.x, self.y - 120, 120, 120)
-            )
 
         window.blit(self.image, pygame.Rect(self.x, self.y, self.width, self.height))
         soFar1 = 0

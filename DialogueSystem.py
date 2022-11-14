@@ -6,6 +6,7 @@ from globals import Globals
 
 class DialogueSystem:
     listOfTextWindows = []
+    pairs = []
 
     def __init__(self) -> None:
         pass
@@ -29,10 +30,18 @@ class DialogueSystem:
             DialogueSystem.listOfTextWindows[i].update()
         self.clickedOn()
 
-    def addWindow(self, pos, text, additionalParameters, speaker):
+    def addWindow(self, pos, text, additionalParameters, action, actionParams):
         width = FontSheet.getLenOfString(text) + 70
         height = 80
-        textWindow = TextWindow(width, height, pos, text, additionalParameters, speaker)
+        textWindow = TextWindow(
+            width,
+            height,
+            pos,
+            text,
+            additionalParameters,
+            action=action,
+            actionParams=actionParams,
+        )
         DialogueSystem.listOfTextWindows.append(textWindow)
 
     def addChoice(self, poss, texts, additionalParameters, speakers):
@@ -49,7 +58,6 @@ class DialogueSystem:
 
     def clickedOn(self):
         for txtWindow in self.listOfTextWindows:
-            print(Globals.events)
             for event in Globals.events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse = pygame.mouse.get_pos()
@@ -61,4 +69,9 @@ class DialogueSystem:
                             mouse[1] > txtWindow.pos.y
                             and mouse[1] < txtWindow.pos.y + txtWindow.height
                         ):
-                            Globals.entityList[0].hp += 10
+                            txtWindow.action(txtWindow.actionParams)
+                            txtWindow.lifeSpan = 0
+                            for pair in DialogueSystem.pairs:
+                                if txtWindow in pair:
+                                    for j in range(len(pair)):
+                                        pair[j].lifeSpan = 0
