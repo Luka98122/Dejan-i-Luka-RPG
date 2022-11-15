@@ -8,3 +8,4 @@ class Globals:
     portalList = [0, 0]
     currentMap = 0
     events = 0
+    screenDimensions = [1920, 1080]

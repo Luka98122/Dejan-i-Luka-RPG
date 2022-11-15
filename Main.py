@@ -41,7 +41,9 @@ abc = "abcdefghijklmnopqrstuvwxyz"
 collisionDetector = CollisionDetector()
 deathCooldown = 100
 cameraOffset = pygame.Vector2(0, 0)
-window = pygame.display.set_mode((800, 600))  # , pygame.FULLSCREEN)
+window = pygame.display.set_mode(
+    (Globals.screenDimensions[0], Globals.screenDimensions[1])
+)  # , pygame.FULLSCREEN)
 movementCooldown = 0
 entityList = Globals.entityList
 fontSheet = FontSheet()
@@ -351,6 +353,7 @@ def play():
 
         if player.hp >= 1:
             player.Update()
+            player.Draw(window, cameraOffset)
         dialogueSystem.update()
         # player.Draw(window, cameraOffset)
         hud.Draw()

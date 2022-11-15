@@ -48,7 +48,7 @@ class NPC(Entity):
             and self.collisonCooldown < 0
             and self.id == "merchant1"
         ):
-            pos1 = pygame.Vector2(50, 500)
+            pos1 = pygame.Vector2(50, 1000)
             if self.id == "merchant1":
                 self.window.blit(
                     self.ICON_Merchant1,
@@ -62,7 +62,7 @@ class NPC(Entity):
                 )
             dialogueSystem.addWindow(
                 self,
-                pygame.Vector2(50, 500),
+                pygame.Vector2(50, 1000),
                 self.texts[0],
                 [5, 150],
                 action=myFunction,
@@ -70,7 +70,7 @@ class NPC(Entity):
             )
             dialogueSystem.addWindow(
                 self,
-                pygame.Vector2(50, 400),
+                pygame.Vector2(50, 900),
                 self.texts[1],
                 [5, 150],
                 action=myFunction,

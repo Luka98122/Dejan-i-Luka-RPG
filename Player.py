@@ -158,80 +158,99 @@ class Player(Entity):
         mousePos[0] = mousePos[0] // Globals.sizeofEverything * Globals.sizeofEverything
         mousePos[1] = mousePos[1] // Globals.sizeofEverything * Globals.sizeofEverything
         for event in Globals.events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if Globals.portalsPlaced[0] == 0:
-                    self.addEntity(
-                        Portal(
+            if event.type == pygame.MOUSEBUTTONDOWN and self.isPassable(
+                int(self.pos.x) - 4 + int(mousePos[0]) // Globals.sizeofEverything,
+                int(self.pos.y) - 4 + int(mousePos[1]) // Globals.sizeofEverything,
+            ):
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if Globals.portalsPlaced[0] == 0:
+                        self.addEntity(
+                            Portal(
+                                self.pos.x
+                                - 4
+                                + mousePos[0] // Globals.sizeofEverything,
+                                self.pos.y
+                                - 4
+                                + mousePos[1] // Globals.sizeofEverything,
+                                0,
+                            ),
+                            1,
+                        )
+                        Globals.portalList[0] = Portal(
                             self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
                             self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                             0,
-                        ),
-                        1,
-                    )
-                    Globals.portalList[0] = Portal(
-                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                        0,
-                    )
-                    Globals.portalsPlaced[0] = 1
-                # print("added portal 0")
-                else:
-                    for entity in Globals.entityList:
-                        if type(entity) == Portal and entity.ID == 0:
-                            Globals.entityList.remove(entity)
-                            break
+                        )
+                        Globals.portalsPlaced[0] = 1
+                    # print("added portal 0")
+                    else:
+                        for entity in Globals.entityList:
+                            if type(entity) == Portal and entity.ID == 0:
+                                Globals.entityList.remove(entity)
+                                break
 
-                    self.addEntity(
-                        Portal(
+                        self.addEntity(
+                            Portal(
+                                self.pos.x
+                                - 4
+                                + mousePos[0] // Globals.sizeofEverything,
+                                self.pos.y
+                                - 4
+                                + mousePos[1] // Globals.sizeofEverything,
+                                0,
+                            ),
+                            1,
+                        )
+                        Globals.portalList[0] = Portal(
                             self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
                             self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                             0,
-                        ),
-                        1,
-                    )
-                    Globals.portalList[0] = Portal(
-                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                        0,
-                    )
-
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                if Globals.portalsPlaced[1] == 0:
-                    self.addEntity(
-                        Portal(
+                        )
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                    if Globals.portalsPlaced[1] == 0:
+                        self.addEntity(
+                            Portal(
+                                self.pos.x
+                                - 4
+                                + mousePos[0] // Globals.sizeofEverything,
+                                self.pos.y
+                                - 4
+                                + mousePos[1] // Globals.sizeofEverything,
+                                1,
+                            ),
+                            1,
+                        )
+                        Globals.portalList[1] = Portal(
                             self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
                             self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                             1,
-                        ),
-                        1,
-                    )
-                    Globals.portalList[1] = Portal(
-                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                        1,
-                    )
-                    Globals.portalsPlaced[1] = 1
-                # print("added portal 1")
+                        )
+                        Globals.portalsPlaced[1] = 1
+                    # print("added portal 1")
 
-                else:
-                    for entity in Globals.entityList:
-                        if type(entity) == Portal and entity.ID == 1:
-                            Globals.entityList.remove(entity)
-                            break
+                    else:
+                        for entity in Globals.entityList:
+                            if type(entity) == Portal and entity.ID == 1:
+                                Globals.entityList.remove(entity)
+                                break
 
-                    self.addEntity(
-                        Portal(
+                        self.addEntity(
+                            Portal(
+                                self.pos.x
+                                - 4
+                                + mousePos[0] // Globals.sizeofEverything,
+                                self.pos.y
+                                - 4
+                                + mousePos[1] // Globals.sizeofEverything,
+                                1,
+                            ),
+                            1,
+                        )
+                        Globals.portalList[1] = Portal(
                             self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
                             self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                             1,
-                        ),
-                        1,
-                    )
-                    Globals.portalList[1] = Portal(
-                        self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
-                        self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
-                        1,
-                    )
+                        )
 
     def Activations(self, entityList):
         for i in range(len(entityList)):
