@@ -1,6 +1,18 @@
 import random
 import pygame
 import sys
+
+from globals import Globals
+
+Globals.charDimensions = []
+from FontSheet import FontSheet
+
+fontSheet = FontSheet()
+location = "Textures\\textFontSheet.png"
+fontSheet.getDimensions(location)
+location = "Textures\\textFontSheetLowerCase.png"
+Globals.charDimensions = fontSheet.getDimensions(location)
+
 from EnemySpawner import EnemySpawner
 from Entity import Entity
 from CollisionDetector import CollisionDetector
@@ -17,8 +29,6 @@ from Enemy1 import Enemy1
 from NPC import NPC
 from EnemySpawner import EnemySpawner
 from Portal import Portal
-from globals import Globals
-from FontSheet import FontSheet
 from DialogueSystem import DialogueSystem
 from map1 import gridMap1
 from map2 import gridMap2
@@ -46,13 +56,9 @@ window = pygame.display.set_mode(
 )  # , pygame.FULLSCREEN)
 movementCooldown = 0
 entityList = Globals.entityList
-fontSheet = FontSheet()
-fontSheet.getDimensions("Textures\\TextFontSheet.png")
+
 dialogueSystem = DialogueSystem()
-# dialogueSystem.addWindow(pygame.Vector2(20, 100), "start game", [2])
-# dialogueSystem.addWindow(pygame.Vector2(20, 200), "enter your name", [5])
-# dialogueSystem.addWindow(pygame.Vector2(20, 300), "have fun and", [3])
-# dialogueSystem.addWindow(pygame.Vector2(20, 400), "try not to die", [4])
+
 
 maps = [gridMap1, gridMap2]
 
@@ -157,8 +163,6 @@ def ScaleEverything():
             )
 
 
-# for i in range(len(entityList)):
-#    print(entityList[i].pos, entityList[i].type)
 # =========================DOOR============================#
 
 player = Player(
@@ -174,6 +178,8 @@ entityList.append(player)
 addEntity(Chest(2, 1), 1)
 addEntity(Door(17, 18), 1)
 addEntity(Chest(15, 14), 1)
+addEntity(Chest(17, 13), 1)
+addEntity(Chest(50, 9), 1)
 addEntity(Chest(33, 11), 1)
 # addEntity(MapDoor(68, 4, 1), 1) WIP
 # addEntity(MapDoor(0, 4, 0), 1) WIP
@@ -185,7 +191,10 @@ addEntity(Door(18, 24), 2)
 addEntity(Door(33, 19), 2)
 addEntity(
     NPC(
-        pygame.Vector2(20, 17), "merchant1", ["get a heart", "lose a heart"], isPassable
+        pygame.Vector2(20, 17),
+        "merchant1",
+        ["Get a heart", "Lana is the best"],
+        isPassable,
     ),
     1,
 )
@@ -208,6 +217,8 @@ addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 
 hud = Hud(window, player)
 # =========================HUD=============================#
+def act(actionParams):
+    pass
 
 
 def main_menu():

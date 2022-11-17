@@ -9,3 +9,5 @@ class Globals:
     currentMap = 0
     events = 0
     screenDimensions = [1920, 1080]
+    charDimensions = []
+    abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

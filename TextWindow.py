@@ -1,9 +1,9 @@
 import pygame
 from FontSheet import FontSheet
 import random
+from globals import Globals
 
 fontSheet = FontSheet()
-fontSheet.getDimensions("Textures\\TextFontSheet.png")
 
 
 class TextWindow:
@@ -48,8 +48,8 @@ class TextWindow:
                 soFar1 += 20
                 continue
             soFar1 += (
-                fontSheet.charDimensions[fontSheet.abc.index(self.text[i])][2]
-                - fontSheet.charDimensions[fontSheet.abc.index(self.text[i])][1]
+                fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
+                - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
             ) + 10
         # pygame.display.flip()
         if self.curentChar < len(self.text):
@@ -66,8 +66,8 @@ class TextWindow:
                     self.soFar += 20
                     return
                 self.soFar += (
-                    fontSheet.charDimensions[fontSheet.abc.index(self.text[index])][2]
-                    - fontSheet.charDimensions[fontSheet.abc.index(self.text[index])][1]
+                    fontSheet.charDimensions[Globals.abc.index(self.text[index])][2]
+                    - fontSheet.charDimensions[Globals.abc.index(self.text[index])][1]
                 ) + 10
                 self.lastSoFar = self.soFar
             self.currentFrame += 1
@@ -82,7 +82,7 @@ class TextWindow:
                     self.soFar += 20
                     continue
                 self.soFar += (
-                    fontSheet.charDimensions[fontSheet.abc.index(self.text[i])][2]
-                    - fontSheet.charDimensions[fontSheet.abc.index(self.text[i])][1]
+                    fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
+                    - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
                 ) + 10
             self.lifeSpan -= 1

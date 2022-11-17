@@ -1,6 +1,7 @@
 import pygame
 from PIL import Image
 import time
+from globals import Globals
 
 
 class FontSheet:
@@ -8,12 +9,13 @@ class FontSheet:
     textSheetLowerCase = pygame.image.load("Textures\\textFontSheetLowerCase.png")
     fontSheets = [textSheetCaps, textSheetLowerCase]
     charsInfo = []
-    abc = "abcdefghijklmnopqrstuvwxyz"
+    abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
     def __init__(self) -> None:
         pass
 
     charDimensions = []
+    allDims = []
 
     def getDimensions(self, fontSheet):
         height = 32
@@ -70,9 +72,10 @@ class FontSheet:
                 if layer < 1:
                     layer += 1
                 else:
-                    return
+                    return FontSheet.charDimensions
                 x = 0
             continue
+        return FontSheet.charDimensions
 
         print(FontSheet.charsInfo)
 
@@ -84,12 +87,31 @@ class FontSheet:
     ):
         if char == " ":
             return
-        index = FontSheet.abc.index(char)
-        info = FontSheet.charDimensions[index]
+        index = Globals.abc.index(char)
+        sheetNumber = 0
+        height = 32
+        multiplier = 40
+        spec = 0
+
+        if index > 25:
+            sheetNumber = 1
+            height = 36
+            multiplier = 45
+            if char == "t":
+                multiplier = 41
+                height = 40
+                spec = 4
+        if char == "g" and sheetNumber == 1:
+            height = 44
+
+        info = Globals.charDimensions[index]
+        if char in ["p", "q", "y"] and sheetNumber == 1:
+            height = 44
+
         window.blit(
-            FontSheet.fontSheets[0],
-            pygame.Rect(pos[0], pos[1], info[2] - info[1], 32),
-            (info[1], info[0] * 40, info[2] - info[1], 32),
+            FontSheet.fontSheets[sheetNumber],
+            pygame.Rect(pos[0], pos[1] - spec, info[2] - info[1], height),
+            (info[1], info[0] * multiplier, info[2] - info[1], height),
         )
 
     def getLenOfString(myString):
@@ -98,8 +120,8 @@ class FontSheet:
             if char == " ":
                 res += 20
                 continue
-            index = FontSheet.abc.index(char)
-            info = FontSheet.charDimensions[index]
+            index = Globals.abc.index(char)
+            info = Globals.charDimensions[index]
             res += info[2] - info[1] + 10
         return res
 
@@ -110,8 +132,8 @@ class FontSheet:
             if string[i] == " ":
                 sofar += 20
                 continue
-            index = FontSheet.abc.index(string[i])
-            info = FontSheet.charDimensions[index]
+            index = Globals.abc.index(string[i])
+            info = Globals.charDimensions[0][index]
             FontSheet.drawChar(
                 self,
                 string[i],
