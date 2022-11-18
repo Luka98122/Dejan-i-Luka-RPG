@@ -343,6 +343,9 @@ def play():
         # Update all entities
         for entity in entityList:
             entity.Update()
+            if Globals.portalsPlaced[0] != 0 and Globals.portalsPlaced[1] != 0:
+                if Globals.portalList[0].pos == Globals.portalList[1].pos:
+                    break
 
         # Remove dead enities
         i = 0

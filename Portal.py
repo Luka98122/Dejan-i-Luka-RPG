@@ -61,7 +61,7 @@ class Portal(Entity):
         if other.type == "player":
             if other.portalCD <= 0:
                 if Globals.portalList[self.ID - 1] != 0:
-                    other.pos = Globals.portalList[self.ID - 1].pos
+                    other.pos = Globals.portalList[self.ID - 1].pos.copy()
                     other.portalCD = 250
                     other.cameraOffset.x -= (
                         Globals.portalList[self.ID].pos.x
@@ -71,4 +71,6 @@ class Portal(Entity):
                         Globals.portalList[self.ID].pos.y
                         - Globals.portalList[self.ID - 1].pos.y
                     )
+                    print("moved")
+
         return super().OnCollide(other)
