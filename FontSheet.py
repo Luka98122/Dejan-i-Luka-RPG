@@ -32,8 +32,11 @@ class FontSheet:
                 a1 = 2
             switch = 0
             column = 0
+            bonus = 0
+            if fontSheet != "Textures\\InventoryNumbers.png":
+                bonus = 8
             for y in range(height):
-                if pixels[x, y + layer * height + 4][3] == 0:
+                if pixels[x, y + layer * height + bonus][3] == 0:
                     continue
                 else:
                     switch = 1

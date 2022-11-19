@@ -15,10 +15,10 @@ def act(actionParams):
     pass
 
 
-# FontSheet.charDimensions = []
-# location = "Textures\\InventoryNumbers.png"
-# Inventory.charDimensions = fontSheet.getDimensions(location, 8)
-# FontSheet.charDimensions = []
+FontSheet.charDimensions = []
+location = "Textures\\InventoryNumbers.png"
+Inventory.charDimensions = fontSheet.getDimensions(location, 8)
+FontSheet.charDimensions = []
 location = "Textures\\textFontSheet.png"
 fontSheet.getDimensions(location, 32)
 location = "Textures\\textFontSheetLowerCase.png"
