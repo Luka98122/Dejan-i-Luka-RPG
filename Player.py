@@ -12,7 +12,7 @@ from Portal import Portal
 class Player(Entity):
     sizeofEverything = 0
     speed = 5
-    hp = 100
+    hp = 500
     movementCooldown = 0
     potionCooldown = 100
     defaultCooldown = 15
@@ -58,6 +58,7 @@ class Player(Entity):
         self.bloodpool = pygame.transform.scale(
             self.bloodpool, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
+        self.hp = 100
 
     startx = 4  # * sizeofEverything // 100
     starty = 4  # * sizeofEverything // 100
@@ -143,7 +144,7 @@ class Player(Entity):
                     )
                 ):
                     self.addEntity(
-                        Trap(
+                        Chest(
                             self.pos.x - 4 + mousePos[0] // Globals.sizeofEverything,
                             self.pos.y - 4 + mousePos[1] // Globals.sizeofEverything,
                         ),
@@ -245,7 +246,7 @@ class Player(Entity):
                 ):
                     self.Heal(self.inventory[-1][0].heal)
                     self.inventory[-1][0].uses -= 1
-                    self.potionCooldown = 100
+                    self.potionCooldown = 25
 
     def selectSpell(self):
         keys = pygame.key.get_pressed()

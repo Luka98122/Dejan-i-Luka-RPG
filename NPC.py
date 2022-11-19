@@ -22,6 +22,7 @@ class NPC(Entity):
 
     ICON_Unkown = pygame.image.load("textures\\ICONS\\UnknownICON.png")
     ICON_Unkown = pygame.transform.scale(ICON_Unkown, (120, 120))
+    type = "npc"
 
     def __init__(self, pos, id, texts, isPassable) -> None:
         self.pos = pos

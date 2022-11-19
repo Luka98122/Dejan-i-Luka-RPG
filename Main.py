@@ -8,10 +8,21 @@ Globals.charDimensions = []
 from FontSheet import FontSheet
 
 fontSheet = FontSheet()
+from inventory import Inventory
+
+
+def act(actionParams):
+    pass
+
+
+# FontSheet.charDimensions = []
+# location = "Textures\\InventoryNumbers.png"
+# Inventory.charDimensions = fontSheet.getDimensions(location, 8)
+# FontSheet.charDimensions = []
 location = "Textures\\textFontSheet.png"
-fontSheet.getDimensions(location)
+fontSheet.getDimensions(location, 32)
 location = "Textures\\textFontSheetLowerCase.png"
-Globals.charDimensions = fontSheet.getDimensions(location)
+Globals.charDimensions = fontSheet.getDimensions(location, 32)
 
 from EnemySpawner import EnemySpawner
 from Entity import Entity
@@ -33,7 +44,7 @@ from DialogueSystem import DialogueSystem
 from map1 import gridMap1
 from map2 import gridMap2
 
-
+inventory = Inventory()
 listOfClassesToScale = [
     Fire,
     Player,
@@ -54,11 +65,26 @@ cameraOffset = pygame.Vector2(0, 0)
 window = pygame.display.set_mode(
     (Globals.screenDimensions[0], Globals.screenDimensions[1])
 )  # , pygame.FULLSCREEN)
+
 movementCooldown = 0
 entityList = Globals.entityList
 
 dialogueSystem = DialogueSystem()
+dialogueSystem.addWindow(
+    pygame.Vector2(100, 100),
+    "ABCDEFGHIJKLMNOPQRSTVWXYZ",
+    [5, 500],
+    act,
+    {"healthy": 2},
+)
 
+dialogueSystem.addWindow(
+    pygame.Vector2(100, 200),
+    "abcdefghijklmnopqrstuvwxyz",
+    [5, 500],
+    act,
+    {"healthy": 2},
+)
 
 maps = [gridMap1, gridMap2]
 
@@ -217,8 +243,6 @@ addEntity(EnemySpawner(pygame.Vector2(1, 1), isPassable, addEntity), 1)
 
 hud = Hud(window, player)
 # =========================HUD=============================#
-def act(actionParams):
-    pass
 
 
 def main_menu():
@@ -243,23 +267,6 @@ def main_menu():
     pygame.quit()
 
 
-def pause():
-    program_radi = True
-    while program_radi:
-        for dogadjaj in pygame.event.get():
-            if dogadjaj.type == pygame.QUIT:
-                program_radi = False
-            if dogadjaj.type == pygame.KEYDOWN:
-                if dogadjaj.key == pygame.K_p:
-                    return
-        window.fill((255, 0, 0))
-
-    pygame.quit()
-
-
-player.hp = 100
-
-
 def play():
     global deathCooldown
     global currentMap
@@ -267,123 +274,128 @@ def play():
     global sizeOfEverything
     global firesystem
     frameCounter = 0
+    pause = 0
     dialogueString = ""
     while True:
-        Globals.events = pygame.event.get()
-        frameCounter += 1
-        currentMap = maps[Globals.currentMap]
-        for event in Globals.events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                print("DOWN")
-            if event.type == pygame.QUIT:
-                pygame.display.quit()
+        pygame.event.pump()
+        keys = pygame.key.get_pressed()
+        if pause == 0:
+            Globals.events = pygame.event.get()
+            frameCounter += 1
+            currentMap = maps[Globals.currentMap]
+            for event in Globals.events:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    print("DOWN")
+                if event.type == pygame.QUIT:
+                    pygame.display.quit()
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEWHEEL:
+                    if event.y > 0 and Globals.sizeofEverything != 100:
+                        Globals.sizeofEverything = Globals.sizeofEverything * 2
+                        ScaleEverything()
+                    if event.y < 0 and Globals.sizeofEverything != 25:
+                        Globals.sizeofEverything = Globals.sizeofEverything / 2
+                        ScaleEverything()
+                    print(
+                        event.x,
+                        event.y,
+                    )
+            if keys[pygame.K_ESCAPE]:
+                sys.exit()
+            # System update
+            collisionDetector.Update(entityList)
+            firesystem.Update(entityList, frameCounter)
+
+            if keys[pygame.K_p]:
+                pause = 1
+                continue
+            if keys[pygame.K_m]:
+                currentMap = gridMap2
+                firesystem = FireSystem(currentMap)
+            myKeys = []
+            for key in keys:
+                if key == True:
+                    if keys.index(key) - 4 < 26:
+                        myKeys.append(abc[keys.index(key) - 4])
+            for key in myKeys:
+                dialogueString += key
+            if keys[pygame.K_RETURN]:
+                dialogueSystem.addWindow(
+                    pygame.Vector2(20, 300), dialogueString, [8, 150], "unknown"
+                )
+                dialogueString = ""
+            for i in range(len(currentMap)):
+                for j in range(len(currentMap[0])):
+                    slika = 0
+                    if currentMap[i][j] == "S":
+                        slika = PLimgSetup(sand)
+                    if currentMap[i][j] == "O":
+                        slika = PLimgSetup(Dirt)
+                    if currentMap[i][j] == "W":
+                        slika = PLimgSetup(water1)
+                    if currentMap[i][j] == "X":
+                        slika = PLimgSetup(StoneFloor)
+                    if currentMap[i][j] == "F":
+                        slika = PLimgSetup(WoodFloor)
+                    window.blit(
+                        slika,
+                        (
+                            j * Globals.sizeofEverything
+                            - int(cameraOffset.x) * Globals.sizeofEverything,
+                            i * Globals.sizeofEverything
+                            - int(cameraOffset.y) * Globals.sizeofEverything,
+                        ),
+                    )
+            # Update all entities
+            for entity in entityList:
+                entity.Update()
+
+            # Remove dead enities
+            i = 0
+            while i < len(entityList):
+                if entityList[i].hp <= 0:
+                    if type(entityList[i]) == Portal:
+                        Globals.portalsPlaced[entityList[i].ID] = 0
+                        Globals.portalList[entityList[i].ID] = 0
+                        print("did it")
+                    entityList.remove(entityList[i])
+                    i -= 1
+                i += 1
+
+            # Draw all entities
+            for entity in entityList:
+                # if type(entity) == Fire:
+                #    print("gotem")
+                entity.Draw(window, cameraOffset)
+
+            if player.hp >= 1:
+                player.Update()
+                player.Draw(window, cameraOffset)
+            dialogueSystem.update()
+            # player.Draw(window, cameraOffset)
+            hud.Draw()
+            dialogueSystem.draw(window)
+            if player.hp <= 0:
+                deathCooldown -= 1
+            pygame.display.flip()
+            if deathCooldown <= 0:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
-                    pause()
-
-            if event.type == pygame.MOUSEWHEEL:
-                if event.y > 0 and Globals.sizeofEverything != 100:
-                    Globals.sizeofEverything = Globals.sizeofEverything * 2
-                    ScaleEverything()
-                if event.y < 0 and Globals.sizeofEverything != 25:
-                    Globals.sizeofEverything = Globals.sizeofEverything / 2
-                    ScaleEverything()
-                print(
-                    event.x,
-                    event.y,
-                )
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
-            sys.exit()
-        # System update
-        collisionDetector.Update(entityList)
-        firesystem.Update(entityList, frameCounter)
-
-        if keys[pygame.K_p]:
-            pause()
-        if keys[pygame.K_m]:
-            currentMap = gridMap2
-            firesystem = FireSystem(currentMap)
-        myKeys = []
-        for key in keys:
-            if key == True:
-                if keys.index(key) - 4 < 26:
-                    myKeys.append(abc[keys.index(key) - 4])
-        for key in myKeys:
-            dialogueString += key
-        if keys[pygame.K_RETURN]:
-            dialogueSystem.addWindow(
-                pygame.Vector2(20, 300), dialogueString, [8, 150], "unknown"
-            )
-            dialogueString = ""
-        for i in range(len(currentMap)):
-            for j in range(len(currentMap[0])):
-                slika = 0
-                if currentMap[i][j] == "S":
-                    slika = PLimgSetup(sand)
-                if currentMap[i][j] == "O":
-                    slika = PLimgSetup(Dirt)
-                if currentMap[i][j] == "W":
-                    slika = PLimgSetup(water1)
-                if currentMap[i][j] == "X":
-                    slika = PLimgSetup(StoneFloor)
-                if currentMap[i][j] == "F":
-                    slika = PLimgSetup(WoodFloor)
-                window.blit(
-                    slika,
-                    (
-                        j * Globals.sizeofEverything
-                        - int(cameraOffset.x) * Globals.sizeofEverything,
-                        i * Globals.sizeofEverything
-                        - int(cameraOffset.y) * Globals.sizeofEverything,
-                    ),
-                )
-        # Update all entities
-        for entity in entityList:
-            entity.Update()
-            if Globals.portalsPlaced[0] != 0 and Globals.portalsPlaced[1] != 0:
-                if Globals.portalList[0].pos == Globals.portalList[1].pos:
-                    break
-
-        # Remove dead enities
-        i = 0
-        while i < len(entityList):
-            if entityList[i].hp <= 0:
-                if type(entityList[i]) == Portal:
-                    Globals.portalsPlaced[entityList[i].ID] = 0
-                    Globals.portalList[entityList[i].ID] = 0
-                    print("did it")
-                entityList.remove(entityList[i])
-                i -= 1
-            i += 1
-
-        # Draw all entities
-        for entity in entityList:
-            # if type(entity) == Fire:
-            #    print("gotem")
-            entity.Draw(window, cameraOffset)
-
-        if player.hp >= 1:
-            player.Update()
-            player.Draw(window, cameraOffset)
-        dialogueSystem.update()
-        # player.Draw(window, cameraOffset)
-        hud.Draw()
-        dialogueSystem.draw(window)
-        if player.hp <= 0:
-            deathCooldown -= 1
-        pygame.display.flip()
-        if deathCooldown <= 0:
-            pygame.quit()
-            sys.exit()
-        window.fill(pygame.Color("blue"))
-        # print(f"EC: {len(entityList):4}")
-        # print(Globals.sizeofEverything)
-        # print(cameraOffset)
-        # sat.tick(60)
-        # print(sat)
+            window.fill(pygame.Color("blue"))
+            # print(f"EC: {len(entityList):4}")
+            # print(Globals.sizeofEverything)
+            # print(cameraOffset)
+            # sat.tick(60)
+            # print(sat)
+        else:
+            if keys[pygame.K_TAB]:
+                pause = 0
+                continue
+            inventory.Update()
+            inventory.draw(window)
+            pygame.display.flip()
 
 
 if __name__ == "__main__":

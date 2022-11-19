@@ -16,8 +16,16 @@ class Hud:
 
     def Draw(self):
         # Draw Hearts
-        for i in range(self.player.hp // 10):
-            self.window.blit(self.heart, (i * 75, 0))
+        x = 0
+        y = 0
+        i = 0
+        while i < (self.player.hp // 10):
+            self.window.blit(self.heart, (x * 75, y * 75))
+            i += 1
+            x += 1
+            if x > 24:
+                x = 0
+                y += 1
 
         # Draw QuickUseSlots
         self.window.blit(self.quickUseSlots, (445, 900))

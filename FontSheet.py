@@ -17,8 +17,7 @@ class FontSheet:
     charDimensions = []
     allDims = []
 
-    def getDimensions(self, fontSheet):
-        height = 32
+    def getDimensions(self, fontSheet, height):
         pixelCursor = pygame.Vector2(0, 0)
         image = Image.open(fontSheet)
         pixels = image.load()
@@ -29,10 +28,12 @@ class FontSheet:
         currentCharInfo = []
         counter = 0
         while x < image.size[0]:
+            if len(FontSheet.charDimensions) == 20:
+                a1 = 2
             switch = 0
             column = 0
-            for y in range(32):
-                if pixels[x, y + layer * 40][3] == 0:
+            for y in range(height):
+                if pixels[x, y + layer * height + 4][3] == 0:
                     continue
                 else:
                     switch = 1
@@ -50,6 +51,8 @@ class FontSheet:
                 x += 1
                 lastColumn = 0
                 if x >= image.size[0]:
+                    if fontSheet == "Textures\\InventoryNumbers.png":
+                        return FontSheet.charDimensions
                     if layer < 1:
                         layer += 1
                     else:
@@ -64,6 +67,8 @@ class FontSheet:
             lastColumn = column
             x += 1
             if x >= image.size[0]:
+                if fontSheet == "Textures\\InventoryNumbers.png":
+                    return FontSheet.charDimensions
                 currentCharInfo.append(x)
                 FontSheet.charDimensions.append(currentCharInfo)
                 currentCharInfo = []
