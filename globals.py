@@ -11,3 +11,5 @@ class Globals:
     screenDimensions = [1920, 1080]
     charDimensions = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    numbers = "1234567890"
+    numberDimensions = []

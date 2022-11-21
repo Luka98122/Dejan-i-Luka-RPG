@@ -7,7 +7,7 @@ import HealthPotion
 class Inventory:
     inventory = pygame.image.load("Textures\\rpgInventory - copy.png")
     inventory = pygame.transform.scale(inventory, (1920, 1080))
-    charDimensions = []
+    charDimensions = Globals.numberDimensions
 
     def Update(self):
         self.unique = []

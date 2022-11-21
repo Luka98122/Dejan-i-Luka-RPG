@@ -17,7 +17,7 @@ def act(actionParams):
 
 FontSheet.charDimensions = []
 location = "Textures\\InventoryNumbers.png"
-Inventory.charDimensions = fontSheet.getDimensions(location, 8)
+Globals.numberDimensions = fontSheet.getDimensions(location, 8)
 FontSheet.charDimensions = []
 location = "Textures\\textFontSheet.png"
 fontSheet.getDimensions(location, 32)
@@ -219,7 +219,7 @@ addEntity(
     NPC(
         pygame.Vector2(20, 17),
         "merchant1",
-        ["Get a heart", "Lana is the best"],
+        ["1", "23456789"],
         isPassable,
     ),
     1,
@@ -319,13 +319,6 @@ def play():
                 if key == True:
                     if keys.index(key) - 4 < 26:
                         myKeys.append(abc[keys.index(key) - 4])
-            for key in myKeys:
-                dialogueString += key
-            if keys[pygame.K_RETURN]:
-                dialogueSystem.addWindow(
-                    pygame.Vector2(20, 300), dialogueString, [8, 150], "unknown"
-                )
-                dialogueString = ""
             for i in range(len(currentMap)):
                 for j in range(len(currentMap[0])):
                     slika = 0

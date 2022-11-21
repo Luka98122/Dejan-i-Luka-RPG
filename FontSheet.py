@@ -7,7 +7,8 @@ from globals import Globals
 class FontSheet:
     textSheetCaps = pygame.image.load("Textures\\TextFontSheet.png")
     textSheetLowerCase = pygame.image.load("Textures\\textFontSheetLowerCase.png")
-    fontSheets = [textSheetCaps, textSheetLowerCase]
+    numberFontSheet = pygame.image.load("Textures\\InventoryNumbers.png")
+    fontSheets = [textSheetCaps, textSheetLowerCase, numberFontSheet]
     charsInfo = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -93,6 +94,19 @@ class FontSheet:
         pos,
         window,
     ):
+        if char.isnumeric() == True:
+            index = Globals.numbers.index(char)
+            sheetNumber = 0
+            height = 32
+            multiplier = 40
+            spec = 0
+            info = Globals.numberDimensions[index]
+            window.blit(
+                FontSheet.fontSheets[2],
+                pygame.Rect(pos[0], pos[1] - spec, info[2] - info[1], height),
+                (info[1], info[0] * multiplier, info[2] - info[1], height),
+            )
+            return
         if char == " ":
             return
         index = Globals.abc.index(char)
@@ -128,6 +142,8 @@ class FontSheet:
             if char == " ":
                 res += 20
                 continue
+            if char.isnumeric() == True:
+                return 3 + 10
             index = Globals.abc.index(char)
             info = Globals.charDimensions[index]
             res += info[2] - info[1] + 10

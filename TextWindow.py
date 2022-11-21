@@ -47,10 +47,16 @@ class TextWindow:
             if self.text[i] == " ":
                 soFar1 += 20
                 continue
-            soFar1 += (
-                fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
-                - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
-            ) + 10
+            if self.text[i].isnumeric() == False:
+                soFar1 += (
+                    fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
+                    - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
+                ) + 10
+            else:
+                soFar1 += (
+                    fontSheet.charDimensions[Globals.numbers.index(self.text[i])][2]
+                    - fontSheet.charDimensions[Globals.numbers.index(self.text[i])][1]
+                ) + 10
         # pygame.display.flip()
         if self.curentChar < len(self.text):
             if self.currentFrame % self.frameRate == 0:
@@ -65,10 +71,22 @@ class TextWindow:
                 if self.text[index] == " ":
                     self.soFar += 20
                     return
-                self.soFar += (
-                    fontSheet.charDimensions[Globals.abc.index(self.text[index])][2]
-                    - fontSheet.charDimensions[Globals.abc.index(self.text[index])][1]
-                ) + 10
+                if self.text.isnumeric() == False:
+                    self.soFar += (
+                        fontSheet.charDimensions[Globals.abc.index(self.text[index])][2]
+                        - fontSheet.charDimensions[Globals.abc.index(self.text[index])][
+                            1
+                        ]
+                    ) + 10
+                else:
+                    self.soFar += (
+                        fontSheet.charDimensions[
+                            Globals.numbers.index(self.text[index])
+                        ][2]
+                        - fontSheet.charDimensions[
+                            Globals.numbers.index(self.text[index])
+                        ][1]
+                    ) + 10
                 self.lastSoFar = self.soFar
             self.currentFrame += 1
         else:
@@ -81,8 +99,16 @@ class TextWindow:
                 if self.text[i] == " ":
                     self.soFar += 20
                     continue
-                self.soFar += (
-                    fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
-                    - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
-                ) + 10
+                if self.text[i].isnumeric() == False:
+                    self.soFar += (
+                        fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
+                        - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
+                    ) + 10
+                else:
+                    self.soFar += (
+                        fontSheet.charDimensions[Globals.numbers.index(self.text[i])][2]
+                        - fontSheet.charDimensions[Globals.numbers.index(self.text[i])][
+                            1
+                        ]
+                    ) + 10
             self.lifeSpan -= 1
