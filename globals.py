@@ -12,4 +12,15 @@ class Globals:
     charDimensions = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
-    numberDimensions = []
+    numberDimensions = [
+        [0, 0],
+        [0, 5],
+        [0, 11],
+        [0, 17],
+        [0, 23],
+        [0, 29],
+        [0, 35],
+        [0, 41],
+        [0, 47],
+        [0, 53],
+    ]
