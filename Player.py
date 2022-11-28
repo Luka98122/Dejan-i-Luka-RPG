@@ -7,6 +7,8 @@ from HealthPotion import HealthPotion
 from Trap import Trap
 from globals import Globals
 from Portal import Portal
+from inventory import Inventory
+import random
 
 
 class Player(Entity):
@@ -42,11 +44,7 @@ class Player(Entity):
         self.addEntity = addEntity
         self.cameraOffset = cameraOffset
         self.sizeofEverything = Globals.sizeofEverything
-        self.inventory = [
-            [HealthPotion(10, self), 1],
-            [HealthPotion(10, self), 1],
-            [HealthPotion(10, self), 1],
-        ]
+        self.inventory = Inventory.inventory
         self.portalCD = 200
         self.spellSlot = 1
         self.picture = pygame.image.load("textures\\wizard.png")
@@ -327,5 +325,6 @@ class Player(Entity):
             other.interacted = 1
         if isinstance(other, Chest) and other.interacted == 0:
             other.interacted = 1
-            self.inventory.append([HealthPotion(10, self), 1])
+            self.inventory.append([HealthPotion(10), 1])
+            Inventory.goldCount += random.randint(1, 3)
         # return super().OnCollide(other)

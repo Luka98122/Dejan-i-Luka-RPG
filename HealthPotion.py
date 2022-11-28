@@ -1,5 +1,6 @@
 import pygame
 from Item import Item
+from globals import Globals
 
 
 class HealthPotion(Item):
@@ -7,17 +8,19 @@ class HealthPotion(Item):
     healthPot = pygame.transform.scale(healthPot, (75, 75))
     picture = healthPot
 
-    def __init__(self, heal, player):
+    def __init__(
+        self,
+        heal,
+    ):
         # super().__init__()
         self.uses = 1
         self.heal = heal
-        self.player = player
         self.type = "HealthPotion"
 
     def Update(self):
         super().Update()
         if self.uses > 0:
-            self.player.takeDamage(-self.heal)
+            Globals.entityList[0].takeDamage(-self.heal)
 
     def Draw(self):
         super().Draw()
