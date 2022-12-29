@@ -321,9 +321,13 @@ class Player(Entity):
             return super().takeDamage(damage)
 
     def OnCollide(self, other):
-        if isinstance(other, Door):
+        if other.type == "npc":
+            if other.id == "merchant1":
+                if Globals.keys[pygame.K_e]:
+                    Globals.state = 2
+        elif isinstance(other, Door):
             other.interacted = 1
-        if isinstance(other, Chest) and other.interacted == 0:
+        elif isinstance(other, Chest) and other.interacted == 0:
             other.interacted = 1
             self.inventory.append([HealthPotion(10), 1])
             Inventory.goldCount += random.randint(1, 3)

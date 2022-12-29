@@ -12,6 +12,7 @@ class Inventory:
         [HealthPotion(10), 1],
         [HealthPotion(10), 1],
         [HealthPotion(10), 1],
+        [HealthPotion(10), 1],
     ]
     charDimensions = Globals.numberDimensions
     multiplier1 = 3.7630662020905923344947735191638

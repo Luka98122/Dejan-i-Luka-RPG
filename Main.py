@@ -40,6 +40,7 @@ from Portal import Portal
 from DialogueSystem import DialogueSystem
 from map1 import gridMap1
 from map2 import gridMap2
+from Shop import Shop
 
 inventory = Inventory()
 listOfClassesToScale = [
@@ -63,11 +64,13 @@ window = pygame.display.set_mode(
     (Globals.screenDimensions[0], Globals.screenDimensions[1])
 )  # , pygame.FULLSCREEN)
 
+shop = Shop(window)
 movementCooldown = 0
 entityList = Globals.entityList
 
 dialogueSystem = DialogueSystem()
-dialogueSystem.addWindow(
+
+"""dialogueSystem.addWindow(
     pygame.Vector2(100, 100),
     "ABCDEFGHIJKLMNOPQRSTVWXYZ",
     [5, 500],
@@ -82,6 +85,7 @@ dialogueSystem.addWindow(
     act,
     {"healthy": 2},
 )
+"""
 
 maps = [gridMap1, gridMap2]
 
@@ -216,7 +220,7 @@ addEntity(
     NPC(
         pygame.Vector2(20, 17),
         "merchant1",
-        ["1", "23456789"],
+        ["Hello Adventurer", "Press E to open my shop"],
         isPassable,
     ),
     1,
@@ -271,13 +275,12 @@ def play():
     global sizeOfEverything
     global firesystem
     frameCounter = 0
-    pause = 0
     dialogueString = ""
     while True:
         pygame.event.pump()
-        keys = pygame.key.get_pressed()
-        if pause == 0:
-            Globals.events = pygame.event.get()
+        Globals.keys = pygame.key.get_pressed()
+        Globals.events = pygame.event.get()
+        if Globals.state == 0:
             frameCounter += 1
             currentMap = maps[Globals.currentMap]
             for event in Globals.events:
@@ -299,23 +302,21 @@ def play():
                         event.x,
                         event.y,
                     )
-            if keys[pygame.K_ESCAPE]:
+            if Globals.keys[pygame.K_ESCAPE]:
                 sys.exit()
             # System update
             collisionDetector.Update(entityList)
             firesystem.Update(entityList, frameCounter)
 
-            if keys[pygame.K_p]:
-                pause = 1
+            if Globals.keys[pygame.K_p]:
+                Globals.state = 1
                 continue
-            if keys[pygame.K_m]:
+            if Globals.keys[pygame.K_o]:
+                Globals.state = 2
+                continue
+            if Globals.keys[pygame.K_m]:
                 currentMap = gridMap2
                 firesystem = FireSystem(currentMap)
-            myKeys = []
-            for key in keys:
-                if key == True:
-                    if keys.index(key) - 4 < 26:
-                        myKeys.append(abc[keys.index(key) - 4])
             for i in range(len(currentMap)):
                 for j in range(len(currentMap[0])):
                     slika = 0
@@ -379,12 +380,19 @@ def play():
             # print(cameraOffset)
             # sat.tick(60)
             # print(sat)
-        else:
-            if keys[pygame.K_TAB]:
-                pause = 0
+        elif Globals.state == 1:
+            if Globals.keys[pygame.K_TAB]:
+                Globals.state = 0
                 continue
             inventory.Update()
             inventory.draw(window)
+            pygame.display.flip()
+        elif Globals.state == 2:
+            if Globals.keys[pygame.K_TAB]:
+                Globals.state = 0
+                continue
+            shop.Draw()
+            shop.Update()
             pygame.display.flip()
 
 

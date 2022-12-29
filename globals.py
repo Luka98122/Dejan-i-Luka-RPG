@@ -12,6 +12,8 @@ class Globals:
     charDimensions = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
+    state = 0
+    keys = 0
     numberDimensions = [
         [0, 0],
         [0, 5],
