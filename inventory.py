@@ -35,6 +35,7 @@ class Inventory:
         info = Globals.numberDimensions[myIndex]
         img = pygame.image.load("Textures\\InventoryNumbers.png")
         img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
+        pos = pygame.Vector2(pos[0], pos[1])
 
         window.blit(
             img,

@@ -134,22 +134,21 @@ class FontSheet:
             res += info[2] - info[1] + 10
         return res
 
-    def drawString(self, string, pos, window, aditionalParameters, firstDraw):
+    def drawString(
+        self,
+        string,
+        pos,
+        window,
+    ):
         sofar = 0
         i = 0
         while i < len(string):
             if string[i] == " ":
                 sofar += 20
+                i += 1
                 continue
             index = Globals.abc.index(string[i])
-            info = Globals.charDimensions[0][index]
-            FontSheet.drawChar(
-                self,
-                string[i],
-                [pos[0] + sofar, pos[1]],
-                window,
-                aditionalParameters,
-                firstDraw,
-            )
+            info = Globals.charDimensions[index]
+            FontSheet.drawChar(self, string[i], [pos[0] + sofar, pos[1]], window)
             sofar += info[2] - info[1] + 10
             i += 1

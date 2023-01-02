@@ -2,6 +2,7 @@ import pygame
 from globals import Globals
 from HealthPotion import HealthPotion
 from inventory import Inventory
+from FontSheet import FontSheet
 import copy
 
 
@@ -14,8 +15,8 @@ class Shop:
     def __init__(self, window) -> None:
         self.window = window
         self.shop = [
-            [HealthPotion(10), 3, 2],
-            [HealthPotion(10), 3, 3],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
             [HealthPotion(10), 3, 1],
         ]
 
@@ -71,6 +72,37 @@ class Shop:
                 ),
             )
 
+    def DisplayProductInfo(self, tiley, tilex):
+        pos = tiley * 10 + tilex
+        window = self.window
+        if pos < len(self.shop):
+            # Get Info
+            price = self.shop[pos][2]
+            name = str(self.shop[pos][0].shopName)
+            height = 100
+            width = FontSheet.getLenOfString(name) + 40
+            # Prep TextWindow
+            textWindow = pygame.image.load("Textures\\TextBox1.png")
+            textWindow = pygame.transform.scale(textWindow, (width, height))
+            mousePos = pygame.mouse.get_pos()
+            # Draw TextWindow
+            window.blit(textWindow, (mousePos[0], mousePos[1], width, height))
+            # Write Text
+            # 1. Item Name
+            FontSheet.drawString(
+                FontSheet,
+                name,
+                [mousePos[0] + 20, mousePos[1] + 10],
+                window,
+            )
+            # 2. Price
+            Inventory.drawNumber(
+                Inventory,
+                window,
+                price,
+                [mousePos[0] + 20, mousePos[1] + 50],
+            )
+
     def Update(self):
         mousePos = pygame.mouse.get_pos()
         mousePos = list(mousePos)
@@ -92,6 +124,7 @@ class Shop:
             ),
         )
         """
+        self.DisplayProductInfo(tiley, tilex)
         # print("Tilex", str(tilex))
         # print(len(self.shop))
         print(Globals.events)
