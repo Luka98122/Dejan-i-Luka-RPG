@@ -12,6 +12,7 @@ class Globals:
     charDimensions = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
+    specialChars = "!\"£$%^&*()-_+=|\\\{\}[]:;@'~#<>?/,."
     state = 0
     keys = 0
     numberDimensions = [
@@ -26,3 +27,4 @@ class Globals:
         [0, 47],
         [0, 53],
     ]
+    specialCharDimensions = []

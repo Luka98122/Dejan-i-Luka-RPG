@@ -47,7 +47,16 @@ class TextWindow:
             if self.text[i] == " ":
                 soFar1 += 20
                 continue
-            if self.text[i].isnumeric() == False:
+            if self.text[i] in Globals.specialChars:
+                soFar1 += (
+                    Globals.specialCharDimensions[
+                        Globals.specialChars.index(self.text[i])
+                    ][2]
+                    - Globals.specialCharDimensions[
+                        Globals.specialChars.index(self.text[i])
+                    ][1]
+                ) + 10
+            elif self.text[i].isnumeric() == False:
                 soFar1 += (
                     fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
                     - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]
@@ -72,12 +81,24 @@ class TextWindow:
                     self.soFar += 20
                     return
                 if self.text.isnumeric() == False:
-                    self.soFar += (
-                        fontSheet.charDimensions[Globals.abc.index(self.text[index])][2]
-                        - fontSheet.charDimensions[Globals.abc.index(self.text[index])][
-                            1
-                        ]
-                    ) + 10
+                    if self.text[index] in Globals.abc:
+                        self.soFar += (
+                            fontSheet.charDimensions[
+                                Globals.abc.index(self.text[index])
+                            ][2]
+                            - fontSheet.charDimensions[
+                                Globals.abc.index(self.text[index])
+                            ][1]
+                        ) + 10
+                    if self.text[index] in Globals.specialChars:
+                        self.soFar += (
+                            Globals.specialCharDimensions[
+                                Globals.specialChars.index(self.text[index])
+                            ][2]
+                            - Globals.specialCharDimensions[
+                                Globals.specialChars.index(self.text[index])
+                            ][1]
+                        ) + 10
                 else:
                     self.soFar += (
                         fontSheet.charDimensions[
@@ -99,7 +120,16 @@ class TextWindow:
                 if self.text[i] == " ":
                     self.soFar += 20
                     continue
-                if self.text[i].isnumeric() == False:
+                if self.text[i] in Globals.specialChars:
+                    soFar1 += (
+                        Globals.specialCharDimensions[
+                            Globals.specialChars.index(self.text[i])
+                        ][2]
+                        - Globals.specialCharDimensions[
+                            Globals.specialChars.index(self.text[i])
+                        ][1]
+                    ) + 10
+                elif self.text[i].isnumeric() == False:
                     self.soFar += (
                         fontSheet.charDimensions[Globals.abc.index(self.text[i])][2]
                         - fontSheet.charDimensions[Globals.abc.index(self.text[i])][1]

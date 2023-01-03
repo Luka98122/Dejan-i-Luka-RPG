@@ -20,7 +20,8 @@ location = "Textures\\textFontSheet.png"
 fontSheet.getDimensions(location, 32)
 location = "Textures\\textFontSheetLowerCase.png"
 Globals.charDimensions = fontSheet.getDimensions(location, 32)
-
+location = "Textures\\SpecialCharsFontsheet.png"
+Globals.specialCharDimensions = fontSheet.getDimensions(location, 40)
 from EnemySpawner import EnemySpawner
 from Entity import Entity
 from CollisionDetector import CollisionDetector
@@ -220,7 +221,7 @@ addEntity(
     NPC(
         pygame.Vector2(20, 17),
         "merchant1",
-        ["Hello Adventurer", "Press E to open my shop"],
+        ["Hello Adventurer", "!\"£$%^&*()-_+=|\\\{\}[]:;@'~#<>?/,."],
         isPassable,
     ),
     1,

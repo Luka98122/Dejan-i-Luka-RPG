@@ -78,7 +78,7 @@ class Shop:
         if pos < len(self.shop):
             # Get Info
             price = self.shop[pos][2]
-            name = str(self.shop[pos][0].shopName)
+            name = str(self.shop[pos][0].shopName) + "!"
             height = 100
             width = FontSheet.getLenOfString(name) + 40
             # Prep TextWindow

@@ -17,7 +17,7 @@ class Inventory:
     charDimensions = Globals.numberDimensions
     multiplier1 = 3.7630662020905923344947735191638
     multiplier2 = 32
-    goldCount = 2
+    goldCount = 6
 
     def Update(self):
         self.unique = []
