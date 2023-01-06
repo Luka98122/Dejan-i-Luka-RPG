@@ -14,7 +14,7 @@ import random
 class Player(Entity):
     sizeofEverything = 0
     speed = 5
-    hp = 500
+    hp = 500.00
     movementCooldown = 0
     potionCooldown = 100
     defaultCooldown = 15
@@ -318,6 +318,17 @@ class Player(Entity):
         if GodMode:
             pass
         else:
+            armor = Inventory.equippedArmor
+            totalArmor = 0
+            for i in range(len(armor)):
+                if armor[i] != None:
+                    totalArmor += armor[i].defense
+                    if armor[i].enchantments[0] != None:
+                        for j in range(len(armor[i].enchantments)):
+                            totalArmor += armor[i].enchantments[j]
+            damage = damage - (damage * (totalArmor / Globals.maxArmor))
+            if totalArmor >= Globals.maxArmor:
+                damage = 0
             return super().takeDamage(damage)
 
     def OnCollide(self, other):

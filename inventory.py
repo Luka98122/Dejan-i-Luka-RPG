@@ -2,10 +2,14 @@ import pygame
 from globals import Globals
 import Item
 from HealthPotion import HealthPotion
+from ArmorBoots import ArmorBoots
+from ArmorChest import ArmorChest
+from ArmorGloves import ArmorGloves
+from ArmorHelmet import ArmorHelmet
 
 
 class Inventory:
-    inventoryPic = pygame.image.load("Textures\\rpgInventory - copy.png")
+    inventoryPic = pygame.image.load("Textures\\RpgInventoryUSE.png")
     inventoryPic = pygame.transform.scale(inventoryPic, (1920, 1080))
     numbers = pygame.image.load("Textures\\InventoryNumbers.png")
     inventory = [
@@ -18,6 +22,12 @@ class Inventory:
     multiplier1 = 3.7630662020905923344947735191638
     multiplier2 = 32
     goldCount = 6
+    equippedArmor = [
+        ArmorBoots("Steel Boots", 150, [None]),
+        ArmorChest("Iron Chestplate", 200, [50, 30, 20]),
+        ArmorGloves("Daedric Gauntlets", 170, [50]),
+        ArmorHelmet("Gold Helmet", 200, [None]),
+    ]
 
     def Update(self):
         self.unique = []

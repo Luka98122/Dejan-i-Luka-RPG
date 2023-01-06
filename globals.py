@@ -10,6 +10,7 @@ class Globals:
     events = 0
     screenDimensions = [1920, 1080]
     charDimensions = []
+    maxArmor = 1000
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     numbers = "1234567890"
     specialChars = "!\"£$%^&*()-_+=|\}{[]:;@'~#<>?/,."
