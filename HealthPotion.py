@@ -18,9 +18,9 @@ class HealthPotion(Item):
         self.heal = heal
         self.type = "HealthPotion"
         if self.heal == 10:
-            self.shopName = "Small Health Potion"
+            self.shopName = "Small Health Potion()"
         if self.heal == 20:
-            self.shopName = "Medium Health Potion"
+            self.shopName = 'Medium Health Potion"'
         if self.heal == 30:
             self.shopName = "Large Health Potion"
 

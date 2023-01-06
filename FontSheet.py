@@ -125,7 +125,7 @@ class FontSheet:
         if char in Globals.specialChars:
             index = Globals.specialChars.index(char)
             spec = 0
-            multiplier = 0
+            multiplier = 52
             height = 40
             info = Globals.specialCharDimensions[index]
             window.blit(
@@ -171,7 +171,22 @@ class FontSheet:
                 info = Globals.charDimensions[index]
             if char in Globals.specialChars:
                 index = Globals.specialChars.index(char)
+                len(Globals.specialCharDimensions)
+                len(Globals.specialChars)
                 info = Globals.specialCharDimensions[index]
+                print(
+                    "Char: "
+                    + char
+                    + "/Info: "
+                    + str(info[0])
+                    + ","
+                    + str(info[1])
+                    + ","
+                    + str(info[2])
+                    + "."
+                    + " Index:"
+                    + str(index)
+                )
             res += info[2] - info[1] + 10
         return res
 

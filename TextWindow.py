@@ -121,6 +121,7 @@ class TextWindow:
                     self.soFar += 20
                     continue
                 if self.text[i] in Globals.specialChars:
+                    return
                     soFar1 += (
                         Globals.specialCharDimensions[
                             Globals.specialChars.index(self.text[i])

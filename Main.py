@@ -20,8 +20,8 @@ location = "Textures\\textFontSheet.png"
 fontSheet.getDimensions(location, 32)
 location = "Textures\\textFontSheetLowerCase.png"
 Globals.charDimensions = fontSheet.getDimensions(location, 32)
-location = "Textures\\SpecialCharsFontsheet.png"
-Globals.specialCharDimensions = fontSheet.getDimensions(location, 40)
+# location = "Textures\\SpecialCharsFontsheet.png"
+# Globals.specialCharDimensions = fontSheet.getDimensions(location, 40)
 from EnemySpawner import EnemySpawner
 from Entity import Entity
 from CollisionDetector import CollisionDetector
@@ -71,9 +71,9 @@ entityList = Globals.entityList
 
 dialogueSystem = DialogueSystem()
 
-"""dialogueSystem.addWindow(
+dialogueSystem.addWindow(
     pygame.Vector2(100, 100),
-    "ABCDEFGHIJKLMNOPQRSTVWXYZ",
+    "!\"£$%^&*()-_+=|\}{[]:;@'~#<>?/,.",
     [5, 500],
     act,
     {"healthy": 2},
@@ -86,7 +86,7 @@ dialogueSystem.addWindow(
     act,
     {"healthy": 2},
 )
-"""
+
 
 maps = [gridMap1, gridMap2]
 
