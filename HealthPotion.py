@@ -1,10 +1,11 @@
 import pygame
 from Item import Item
 from globals import Globals
+from globals import Textures
 
 
 class HealthPotion(Item):
-    healthPot = pygame.image.load("Textures\healthPotion.png")
+    healthPot = Textures.healthPotion
     healthPot = pygame.transform.scale(healthPot, (75, 75))
     picture = healthPot
     shopName = "Health Potion"
@@ -16,11 +17,11 @@ class HealthPotion(Item):
         # super().__init__()
         self.uses = 1
         self.heal = heal
-        self.type = "HealthPotion"
+        self.type = "consumable"
         if self.heal == 10:
-            self.shopName = "Small Health Potion()"
+            self.shopName = "Small Health Potion"
         if self.heal == 20:
-            self.shopName = 'Medium Health Potion"'
+            self.shopName = "Medium Health Potion"
         if self.heal == 30:
             self.shopName = "Large Health Potion"
 

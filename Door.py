@@ -2,12 +2,13 @@ from Entity import Entity
 import pygame
 import CheatFile
 from globals import Globals
+from globals import Textures
 
 
 class Door(Entity):
     sizeofEverything = Globals.sizeofEverything
-    ClosedDoor = pygame.image.load("textures\\ClosedDoor.png")
-    OpenedDoor = pygame.image.load("textures\\OpenedDoor.png")
+    ClosedDoor = Textures.closedDoor
+    OpenedDoor = Textures.openedDoor
     ClosedDoor = pygame.transform.scale(
         ClosedDoor, (sizeofEverything, sizeofEverything)
     )
@@ -24,8 +25,10 @@ class Door(Entity):
         pos = pygame.Vector2(x, y)
         super().__init__(pos)
         self.interacted = 0
-        self.ClosedDoor = pygame.image.load("textures\\ClosedDoor.png")
-        self.OpenedDoor = pygame.image.load("textures\\OpenedDoor.png")
+        self.type = "entity"
+        self.name = "door"
+        self.ClosedDoor = Textures.closedDoor
+        self.OpenedDoor = Textures.openedDoor
         self.ClosedDoor = pygame.transform.scale(
             self.ClosedDoor, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
@@ -34,8 +37,8 @@ class Door(Entity):
         )
 
     def reScale(self):
-        self.ClosedDoor = pygame.image.load("textures\\ClosedDoor.png")
-        self.OpenedDoor = pygame.image.load("textures\\OpenedDoor.png")
+        self.ClosedDoor = Textures.closedDoor
+        self.OpenedDoor = Textures.openedDoor
         self.ClosedDoor = pygame.transform.scale(
             self.ClosedDoor, (Globals.sizeofEverything, Globals.sizeofEverything)
         )

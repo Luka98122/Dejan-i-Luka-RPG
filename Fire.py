@@ -3,12 +3,13 @@ from Entity import Entity
 import random
 import CheatFile
 from globals import Globals
+from globals import Textures
 
 
 class Fire(Entity):
     picture = None
     sizeofEverything = Globals.sizeofEverything
-    picture = pygame.image.load("Textures\\Fire.png")
+    picture = Textures.fire
     picture = pygame.transform.scale(picture, (sizeofEverything, sizeofEverything))
     originalPic = picture
     originalPictures = [picture]
@@ -22,13 +23,9 @@ class Fire(Entity):
         self.hp = randy.randint(30, 150)
         self.randomSpread = 10
         self.generation = generation
-        # Fire.picture = pygame.image.load("Textures\\Fire.png")
-        # Fire.picture = pygame.transform.scale(
-        #    Fire.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
-        # )
 
     def reScale(self):
-        Fire.picture = pygame.image.load("Textures\\Fire.png")
+        Fire.picture = Textures.fire
         Fire.picture = pygame.transform.scale(
             Fire.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )

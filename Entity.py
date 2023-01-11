@@ -7,7 +7,7 @@ class Entity:
 
     def __init__(self, pos) -> None:
         self.pos = pos
-        self.type = 0
+        self.type = "entity"
         self.interacted = 0
         self.hp = 20
 

@@ -2,6 +2,7 @@ from Entity import Entity
 import pygame
 
 from globals import Globals
+from globals import Textures
 
 
 class Portal(Entity):
@@ -20,7 +21,8 @@ class Portal(Entity):
 
     def __init__(self, x, y, ID) -> None:
         self.ID = ID
-        self.type = "portal"
+        self.type = "entity"
+        self.name = "portal"
         self.pos = pygame.Vector2(x, y)
         if self.ID == 0:
             self.picture = Portal.portal1
@@ -58,7 +60,7 @@ class Portal(Entity):
         return super().Draw(self.picture, window, cameraOffset)
 
     def OnCollide(self, other):
-        if other.type == "player":
+        if other.name == "player":
             if other.portalCD <= 0:
                 if Globals.portalList[self.ID - 1] != 0:
                     other.pos = Globals.portalList[self.ID - 1].pos.copy()

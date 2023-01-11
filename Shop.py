@@ -1,5 +1,6 @@
 import pygame
 from globals import Globals
+from globals import Textures
 from HealthPotion import HealthPotion
 from inventory import Inventory
 from FontSheet import FontSheet

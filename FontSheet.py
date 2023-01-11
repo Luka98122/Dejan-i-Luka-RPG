@@ -2,13 +2,14 @@ import pygame
 from PIL import Image
 import time
 from globals import Globals
+from globals import Textures
 
 
 class FontSheet:
-    textSheetCaps = pygame.image.load("Textures\\TextFontSheet.png")
-    textSheetLowerCase = pygame.image.load("Textures\\textFontSheetLowerCase.png")
-    numberFontSheet = pygame.image.load("Textures\\InventoryNumbers.png")
-    specialCharsFontsheet = pygame.image.load("Textures\\SpecialCharsFontsheet.png")
+    textSheetCaps = Textures.textSheetCaps
+    textSheetLowerCase = Textures.textSheetLowerCase
+    numberFontSheet = Textures.numberFontSheet
+    specialCharsFontsheet = Textures.specialCharsFontsheet
     fontSheets = [textSheetCaps, textSheetLowerCase, numberFontSheet]
     charsInfo = []
     abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

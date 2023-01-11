@@ -6,6 +6,7 @@ from Door import Door
 from HealthPotion import HealthPotion
 from Trap import Trap
 from globals import Globals
+from globals import Textures
 from Portal import Portal
 from inventory import Inventory
 import random
@@ -17,7 +18,7 @@ class Player(Entity):
     hp = 500.00
     movementCooldown = 0
     potionCooldown = 100
-    defaultCooldown = 15
+    defaultCooldown = 10
     type = "player"
     isPassable = 0
     addEntity = 0
@@ -39,7 +40,8 @@ class Player(Entity):
 
     def __init__(self, pos, isPassable, addEntity, cameraOffset) -> None:
         super().__init__(pos)
-        self.type = "player"
+        self.type = "entity"
+        self.name = "player"
         self.isPassable = isPassable
         self.addEntity = addEntity
         self.cameraOffset = cameraOffset
@@ -218,7 +220,7 @@ class Player(Entity):
             if (
                 self.pos.x == entityList[i].pos.x
                 and self.pos.y == entityList[i].pos.y
-                and entityList[i].type != "trap"
+                and entityList[i].name != "trap"
             ):
                 entityList[i].interacted = 1
                 # print(entityList[i].interacted)
@@ -238,7 +240,7 @@ class Player(Entity):
         if keys[pygame.K_r]:
             if self.inventory[-1][0].uses >= 1:
                 if (
-                    self.inventory[-1][0].type == "HealthPotion"
+                    type(self.inventory[-1][0]) == HealthPotion
                     and self.inventory[-1][0].uses > 0
                     and self.potionCooldown <= 0
                 ):

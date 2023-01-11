@@ -1,5 +1,6 @@
 import pygame
 from Item import Item
+from globals import Textures
 
 
 class Armor(Item):
@@ -8,4 +9,5 @@ class Armor(Item):
         self.defense = defense
         self.enchantments = enchantments
         self.shopName = name
+        self.type = "equipment"
         super().__init__()

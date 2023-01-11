@@ -3,11 +3,12 @@ from Entity import Entity
 import random
 from Door import Door
 from globals import Globals
+from globals import Textures
 
 
 class Enemy1(Entity):
     sizeofEverything = Globals.sizeofEverything
-    picture = pygame.image.load("textures\\slime.png")
+    picture = Textures.enemy1
     picture = pygame.transform.scale(
         picture, (Globals.sizeofEverything, Globals.sizeofEverything)
     )
@@ -20,10 +21,11 @@ class Enemy1(Entity):
         self.hp = 20
         self.pos = pygame.Vector2(pos[0], pos[1])
         self.alive = 1
-        self.type = "Enemy1"
+        self.type = "entity"
+        self.name = "enemy1"
         self.movementCooldown = 100
         self.isPassable = isPassable
-        self.picture = pygame.image.load("textures\\slime.png")
+        self.picture = Textures.enemy1
         self.picture = pygame.transform.scale(
             self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )
@@ -34,7 +36,7 @@ class Enemy1(Entity):
             self.Movement()
 
     def reScale(self):
-        self.picture = pygame.image.load("textures\\slime.png")
+        self.picture = Textures.enemy1
         self.picture = pygame.transform.scale(
             self.picture, (Globals.sizeofEverything, Globals.sizeofEverything)
         )

@@ -1,5 +1,6 @@
 import pygame
 from globals import Globals
+from globals import Textures
 import Item
 from HealthPotion import HealthPotion
 from ArmorBoots import ArmorBoots
@@ -9,9 +10,9 @@ from ArmorHelmet import ArmorHelmet
 
 
 class Inventory:
-    inventoryPic = pygame.image.load("Textures\\RpgInventoryUSE.png")
+    inventoryPic = Textures.inventory
     inventoryPic = pygame.transform.scale(inventoryPic, (1920, 1080))
-    numbers = pygame.image.load("Textures\\InventoryNumbers.png")
+    numbers = Textures.numbers
     inventory = [
         [HealthPotion(10), 1],
         [HealthPotion(10), 1],
@@ -43,7 +44,7 @@ class Inventory:
         myIndex = number - 1
         multiplier = 5
         info = Globals.numberDimensions[myIndex]
-        img = pygame.image.load("Textures\\InventoryNumbers.png")
+        img = Textures.numbers
         img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
         pos = pygame.Vector2(pos[0], pos[1])
 
@@ -72,7 +73,7 @@ class Inventory:
         y = 46
         multiplier1 = self.multiplier1
         if self.goldCount > 0:
-            image = pygame.image.load("textures\\goldCoin.png")
+            image = Textures.goldCoin
             itemCount = self.goldCount
             image = pygame.transform.scale(
                 image, (int(25 * multiplier1), int(25 * multiplier1))

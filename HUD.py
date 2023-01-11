@@ -1,12 +1,13 @@
 import pygame
+from globals import Textures
 
 
 class Hud:
-    heart = pygame.image.load("Textures\Heart.png")
+    heart = Textures.heart
     heart = pygame.transform.scale(heart, (75, 75))
-    quickUseSlots = pygame.image.load("Textures\QuickUseSlots.png")
+    quickUseSlots = Textures.quickUseSlots
     quickUseSlots = pygame.transform.scale(quickUseSlots, (440, 128))
-    SpellHotbar = pygame.image.load("Textures\SpellHotbar.png")
+    SpellHotbar = Textures.SpellHotbar
     SpellHotbar = pygame.transform.scale(SpellHotbar, (440, 128))
 
     def __init__(self, window, player) -> None:
@@ -36,6 +37,9 @@ class Hud:
                 pic = self.player.inventory[i][0].picture
                 pic = pygame.transform.scale(pic, (120, 120))
                 self.window.blit(pic, (475 + i * 130, 900))
+            # Only 3 inventory slots, so just break to not draw everything
+            if i == 2:
+                break
         # Draw SpellHotbar
         self.window.blit(self.SpellHotbar, (0, 900))
 

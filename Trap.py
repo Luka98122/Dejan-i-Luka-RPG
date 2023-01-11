@@ -25,7 +25,8 @@ class Trap(Entity):
         super().__init__(pos)
         self.damage = 20
         self.interacted = 0
-        self.type = "trap"
+        self.name = "trap"
+        self.type = "entity"
         self.explosiveBarrel = pygame.image.load("textures\\ExplosiveBarrel.png")
         self.oilSpill = pygame.image.load("textures\\OilSpill.png")
         self.explosiveBarrel = pygame.transform.scale(
