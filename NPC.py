@@ -4,6 +4,7 @@ from Entity import Entity
 from Player import Player
 from TextWindow import TextWindow
 from globals import Globals
+from globals import Textures
 
 dialogueSystem = DialogueSystem
 
@@ -13,7 +14,7 @@ def myFunction(actionParams: dict):
 
 
 class NPC(Entity):
-    merchant1 = pygame.image.load("Textures\\merchant1.png")
+    merchant1 = Textures.merchant1
     originalPictures = [merchant1]
     pictures = [merchant1]
 
@@ -24,12 +25,19 @@ class NPC(Entity):
     ICON_Unkown = pygame.transform.scale(ICON_Unkown, (120, 120))
     type = "npc"
 
-    def __init__(self, pos, id, texts, isPassable) -> None:
+    def __init__(
+        self,
+        pos,
+        id,
+        texts,
+        isPassable,
+    ) -> None:
         self.pos = pos
         self.isPassable = isPassable
         self.hp = 200
         self.texts = texts
         self.id = id
+        self.name = id
         self.collisonCooldown = 200
 
     def Draw(self, window, cameraOffset):

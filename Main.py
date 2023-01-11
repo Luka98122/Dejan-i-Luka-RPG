@@ -3,6 +3,7 @@ import pygame
 import sys
 
 from globals import Globals
+from globals import Textures
 
 Globals.charDimensions = []
 from FontSheet import FontSheet
@@ -127,8 +128,8 @@ sand = imgSetup("sand.png")
 WoodFloor = imgSetup("WoodFloor.png")
 
 
-Village = pygame.image.load("Textures\Village.png")
-StartButton = pygame.image.load("Textures\StartButton.png")
+Village = Textures.startScreen
+StartButton = Textures.StartButton
 
 
 def isPassable(
@@ -154,7 +155,7 @@ def isPassable(
 
 ##### Entities (chests, enemies, missiles)
 
-textBubble = pygame.image.load("Textures\\TextBox1.png")
+textBubble = Textures.textBubble
 
 
 class Button:

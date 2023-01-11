@@ -2,6 +2,7 @@ import pygame
 from Entity import Entity
 from Player import Player
 import globals
+from globals import Textures
 
 
 class MapDoor(Entity):
@@ -11,7 +12,7 @@ class MapDoor(Entity):
         self.switchTo = switchTo
         self.pos = pygame.Vector2(x, y)
         self.hp = 1000000000
-        self.picture = pygame.image.load("textures\\ClosedDoor.png")
+        self.picture = Textures.closedDoor
 
     def OnCollide(self, other):
         if type(other) == Player:
@@ -31,7 +32,7 @@ class MapDoor(Entity):
         return super().Update()
 
     def reScale(self):
-        self.picture = pygame.image.load("textures\\ClosedDoor.png")
+        self.picture = Textures.closedDoor
         self.picture = pygame.transform.scale(
             self.picture,
             (globals.Globals.sizeofEverything, globals.Globals.sizeofEverything),
