@@ -17,6 +17,33 @@ class FontSheet:
     def __init__(self) -> None:
         pass
 
+    def drawNumber(self, window, number, pos):
+        myIndex = number - 1
+        multiplier = 5
+        multiplier1 = 3.7630662020905923344947735191638
+        multiplier2 = 30.5
+        for i in range(len(str(number))):
+            info = Globals.numberDimensions[myIndex]
+            img = Textures.numbers
+            img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
+            pos = pygame.Vector2(pos[0] + i * 10, pos[1])
+
+            window.blit(
+                img,
+                pygame.Rect(
+                    pos.x,
+                    pos.y,
+                    int(multiplier * 5 * multiplier1),
+                    int(multiplier * 7 * multiplier1),
+                ),
+                pygame.Rect(
+                    info[1] * multiplier,
+                    info[0] * multiplier,
+                    5 * multiplier,
+                    7 * multiplier,
+                ),
+            )
+
     charDimensions = []
     allDims = []
 
@@ -121,6 +148,9 @@ class FontSheet:
     ):
         if char == " ":
             return
+        if char.isnumeric():
+            self.drawNumber(window, int(char), pos)
+            return
         if char in Globals.abc:
             index = Globals.abc.index(char)
         if char in Globals.specialChars:
@@ -167,6 +197,8 @@ class FontSheet:
             if char == " ":
                 res += 20
                 continue
+            if char.isnumeric():
+                res += 10
             if char in Globals.abc:
                 index = Globals.abc.index(char)
                 info = Globals.charDimensions[index]

@@ -80,14 +80,6 @@ dialogueSystem.addWindow(
     {"healthy": 2},
 )
 
-dialogueSystem.addWindow(
-    pygame.Vector2(100, 200),
-    "abcdefghijklmnopqrstuvwxyz",
-    [5, 500],
-    act,
-    {"healthy": 2},
-)
-
 
 maps = [gridMap1, gridMap2]
 
@@ -388,7 +380,9 @@ def play():
                 continue
             inventory.Update()
             inventory.draw(window)
-            pygame.display.flip()
+            dialogueSystem.update()
+            dialogueSystem.draw(window)
+            # pygame.display.flip()
         elif Globals.state == 2:
             if Globals.keys[pygame.K_TAB]:
                 Globals.state = 0

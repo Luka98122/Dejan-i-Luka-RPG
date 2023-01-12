@@ -19,7 +19,7 @@ class Player(Entity):
     movementCooldown = 0
     potionCooldown = 100
     defaultCooldown = 10
-    type = "player"
+    type = "entity"
     isPassable = 0
     addEntity = 0
     bloodpool = 0

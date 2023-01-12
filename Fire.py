@@ -22,6 +22,8 @@ class Fire(Entity):
         randy = random
         self.hp = randy.randint(30, 150)
         self.randomSpread = 10
+        self.name = "fire"
+        self.type = "entity"
         self.generation = generation
 
     def reScale(self):

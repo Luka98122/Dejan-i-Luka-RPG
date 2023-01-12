@@ -7,12 +7,16 @@ from ArmorBoots import ArmorBoots
 from ArmorChest import ArmorChest
 from ArmorGloves import ArmorGloves
 from ArmorHelmet import ArmorHelmet
+from debugMenu import DebugMenu
+
+dMenu = DebugMenu
 
 
 class Inventory:
     inventoryPic = Textures.inventory
     inventoryPic = pygame.transform.scale(inventoryPic, (1920, 1080))
     numbers = Textures.numbers
+    frame = 0
     inventory = [
         [HealthPotion(10), 1],
         [HealthPotion(10), 1],
@@ -21,7 +25,7 @@ class Inventory:
     ]
     charDimensions = Globals.numberDimensions
     multiplier1 = 3.7630662020905923344947735191638
-    multiplier2 = 32
+    multiplier2 = 30.5
     goldCount = 6
     equippedArmor = [
         ArmorBoots("Steel Boots", 150, [None]),
@@ -29,6 +33,8 @@ class Inventory:
         ArmorGloves("Daedric Gauntlets", 170, [50]),
         ArmorHelmet("Gold Helmet", 200, [None]),
     ]
+    xOffset = 40
+    yOffset = 46
 
     def Update(self):
         self.unique = []
@@ -43,26 +49,27 @@ class Inventory:
     def drawNumber(self, window, number, pos):
         myIndex = number - 1
         multiplier = 5
-        info = Globals.numberDimensions[myIndex]
-        img = Textures.numbers
-        img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
-        pos = pygame.Vector2(pos[0], pos[1])
+        for i in range(len(str(number))):
+            info = Globals.numberDimensions[myIndex]
+            img = Textures.numbers
+            img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
+            pos = pygame.Vector2(pos[0] + i * 10, pos[1])
 
-        window.blit(
-            img,
-            pygame.Rect(
-                pos.x,
-                pos.y,
-                int(multiplier * 5 * self.multiplier1),
-                int(multiplier * 7 * self.multiplier1),
-            ),
-            pygame.Rect(
-                info[1] * multiplier,
-                info[0] * multiplier,
-                5 * multiplier,
-                7 * multiplier,
-            ),
-        )
+            window.blit(
+                img,
+                pygame.Rect(
+                    pos.x,
+                    pos.y,
+                    int(multiplier * 5 * self.multiplier1),
+                    int(multiplier * 7 * self.multiplier1),
+                ),
+                pygame.Rect(
+                    info[1] * multiplier,
+                    info[0] * multiplier,
+                    5 * multiplier,
+                    7 * multiplier,
+                ),
+            )
 
     def draw(self, window):
         unique = self.unique
@@ -124,3 +131,43 @@ class Inventory:
                     int(61 * multiplier1),
                 ),
             )
+        mousePos = pygame.mouse.get_pos()
+        cx = int(
+            (mousePos[0] - self.xOffset * multiplier1) / int(33 * self.multiplier1)
+        )
+        cy = int(
+            (mousePos[1] - self.yOffset * multiplier1) / int(32 * self.multiplier1)
+        )
+        pygame.draw.rect(
+            window,
+            pygame.Color("Red"),
+            pygame.Rect(
+                self.xOffset * multiplier1 + cx * self.multiplier2 * multiplier1,
+                self.yOffset * multiplier1 + cy * self.multiplier2 * multiplier1,
+                self.multiplier2 * self.multiplier1,
+                self.multiplier2 * self.multiplier1,
+            ),
+        )
+        print(cx, cy)
+        dMenu.Update(dMenu, cx, cy, self.multiplier1, self.multiplier2)
+        if self.frame % 20 == 0:
+            dMenu.Draw(dMenu)
+        keys = Globals.keys
+        if keys[pygame.K_1]:
+            self.multiplier1 -= 0.1
+        if keys[pygame.K_2]:
+            self.multiplier1 += 0.1
+        if keys[pygame.K_3]:
+            self.multiplier2 -= 0.1
+        if keys[pygame.K_4]:
+            self.multiplier2 += 0.1
+        if keys[pygame.K_5]:
+            self.xOffset -= 1
+        if keys[pygame.K_6]:
+            self.xOffset += 1
+        if keys[pygame.K_7]:
+            self.yOffset -= 1
+        if keys[pygame.K_8]:
+            self.yOffset += 1
+
+        self.frame += 1
