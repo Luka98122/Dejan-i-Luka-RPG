@@ -9,7 +9,6 @@ class HealthPotion(Consumable):
     healthPot = Textures.healthPotion
     healthPot = pygame.transform.scale(healthPot, (75, 75))
     picture = healthPot
-    shopName = "Health Potion"
 
     def __init__(
         self,

@@ -9,6 +9,7 @@ from ArmorGloves import ArmorGloves
 from ArmorHelmet import ArmorHelmet
 from debugMenu import DebugMenu
 from goldCoin import GoldCoin
+from FontSheet import FontSheet
 
 dMenu = DebugMenu
 
@@ -20,9 +21,8 @@ class Inventory:
     frame = 0
     inventory = [
         [HealthPotion(10), 1],
-        [HealthPotion(10), 1],
-        [HealthPotion(10), 1],
-        [HealthPotion(10), 1],
+        [HealthPotion(20), 1],
+        [HealthPotion(30), 1],
     ]
     charDimensions = Globals.numberDimensions
     multiplier1 = 3.7630662020905923344947735191638
@@ -40,12 +40,36 @@ class Inventory:
     def Update(self):
         self.unique = []
         self.count = []
-        for item in Globals.entityList[0].inventory:
-            if type(item[0]) not in self.unique:
-                self.unique.append(type(item[0]))
+        shopNames = []
+        for item in self.inventory:
+            if item[0].shopName not in shopNames:
+                shopNames.append(item[0].shopName)
+                self.unique.append(item[0])
                 self.count.append(0)
             else:
-                self.count[self.unique.index(type(item[0]))] += 1
+                self.count[shopNames.index(item[0].shopName)] += 1
+
+    def DisplayProductInfo(self, tilex, tiley, window):
+        pos = tiley * 10 + tilex
+        if pos < len(self.inventory):
+            # Get Info
+            name = str(self.inventory[pos][0].shopName)
+            height = 100
+            width = FontSheet.getLenOfString(name) + 40
+            # Prep TextWindow
+            textWindow = pygame.image.load("Textures\\TextBox1.png")
+            textWindow = pygame.transform.scale(textWindow, (width, height))
+            mousePos = pygame.mouse.get_pos()
+            # Draw TextWindow
+            window.blit(textWindow, (mousePos[0], mousePos[1], width, height))
+            # Write Text
+            # 1. Item Name
+            FontSheet.drawString(
+                FontSheet,
+                name,
+                [mousePos[0] + 20, mousePos[1] + 10],
+                window,
+            )
 
     def drawNumber(self, window, number, pos):
         multiplier = 5
@@ -109,8 +133,10 @@ class Inventory:
             )
         for i in range(len(unique)):
             item = unique[i]
-            if item == GoldCoin:
+            if type(item) == GoldCoin:
                 continue
+            if item.shopName == "Small Health Potion":
+                a = 2
             itemCount = count[i]
             image = item.picture
             bonus = 0
@@ -122,7 +148,7 @@ class Inventory:
             window.blit(
                 image,
                 pygame.Rect(
-                    int(x * multiplier1 + (bonus * multiplier1 + i * multiplier1)),
+                    int(x * multiplier1 + (i * 30 * multiplier1)),
                     int(y * multiplier1),
                     int(25 * multiplier1),
                     int(25 * multiplier1),
@@ -132,13 +158,14 @@ class Inventory:
                 window,
                 itemCount + 1,
                 pygame.Vector2(
-                    int(60 * multiplier1 + (bonus * multiplier1 + i * multiplier1)),
+                    int(60 * multiplier1 + (i * 30 * multiplier1)),
                     int(61 * multiplier1),
                 ),
             )
         mousePos = pygame.mouse.get_pos()
         cx = int((mousePos[0] - self.xOffset * multiplier1) / int(33 * 3.50))
         cy = int((mousePos[1] - self.yOffset * multiplier1) / int(32 * 3.50))
+        """
         pygame.draw.rect(
             window,
             pygame.Color("Red"),
@@ -149,8 +176,9 @@ class Inventory:
                 self.multiplier2 * self.multiplier1,
             ),
         )
-        print(cx, cy)
-
+        """
+        print(cy, cx)
+        self.DisplayProductInfo(cx, cy, window)
         dMenu.Update(dMenu, cx, cy, self.multiplier1, self.multiplier2)
         if self.frame % 20 == 0:
             dMenu.Draw(dMenu)
@@ -167,7 +195,7 @@ class Inventory:
         if keys[pygame.K_5]:
             self.xOffset -= 1
         if keys[pygame.K_6]:
-            self.xOffset += 1
+            self.xOfset += 1
         if keys[pygame.K_7]:
             self.yOffset -= 1
         if keys[pygame.K_8]:

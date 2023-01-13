@@ -19,6 +19,27 @@ class Shop:
             [HealthPotion(20), 3, 2],
             [HealthPotion(30), 3, 3],
             [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
+            [HealthPotion(20), 3, 2],
+            [HealthPotion(30), 3, 3],
+            [HealthPotion(10), 3, 1],
         ]
 
     def drawNumber(self, window, number, pos):
@@ -55,21 +76,32 @@ class Shop:
             image = pygame.transform.scale(
                 image, (int(25 * self.multiplier1), int(25 * self.multiplier1))
             )
+            if i > 9:
+                drawAtY = i // 10
+                drawAtX = i % 10
+            else:
+                drawAtY = 0
+                drawAtX = i
             window.blit(
                 image,
                 pygame.Rect(
-                    int(30 * i * self.multiplier1 + 20),
-                    int(30 * (i // 10) * self.multiplier1 + 20),
+                    int(32 * drawAtX * (self.multiplier1 + 0.15) + 20),
+                    int(30 * drawAtY * self.multiplier1 + 20),
                     int(25 * self.multiplier1),
                     int(25 * self.multiplier1),
                 ),
             )
+
             self.drawNumber(
                 window,
                 itemCount + 1,
                 pygame.Vector2(
-                    int(22 * (i + 1) * self.multiplier1 + (i * 11 * self.multiplier1)),
-                    int(22 * self.multiplier1),
+                    int(
+                        10
+                        + 21.6 * (drawAtX + 1) * self.multiplier1
+                        + (drawAtX * 11 * self.multiplier1)
+                    ),
+                    int(22 * self.multiplier1 + drawAtY * 30 * self.multiplier1),
                 ),
             )
 
@@ -113,7 +145,7 @@ class Shop:
         print(tilex, tiley)
         tileSize = int(31 * self.multiplier1)
         # Selected tile is drawn Red for Debug purposes
-        """
+
         pygame.draw.rect(
             self.window,
             pygame.Color("Red"),
@@ -124,7 +156,7 @@ class Shop:
                 tileSize,
             ),
         )
-        """
+
         self.DisplayProductInfo(tiley, tilex)
         # print("Tilex", str(tilex))
         # print(len(self.shop))

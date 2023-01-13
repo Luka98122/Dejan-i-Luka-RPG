@@ -270,10 +270,17 @@ def play():
     global firesystem
     frameCounter = 0
     dialogueString = ""
+    toggleDebugMenuCD = 0
     while True:
+        toggleDebugMenuCD -= 1
         pygame.event.pump()
         Globals.keys = pygame.key.get_pressed()
         Globals.events = pygame.event.get()
+        if Globals.keys[pygame.K_F3]:
+            possibles = [0, 1]
+            Globals.toggleDebugMenu = possibles[
+                possibles.index(Globals.toggleDebugMenu) - 1
+            ]
         if Globals.state == 0:
             frameCounter += 1
             currentMap = maps[Globals.currentMap]
@@ -311,11 +318,7 @@ def play():
             if Globals.keys[pygame.K_m]:
                 currentMap = gridMap2
                 firesystem = FireSystem(currentMap)
-            if Globals.keys[pygame.K_F3]:
-                possibles = [0, 1]
-                Globals.toggleDebugMenu = possibles[
-                    possibles.index(Globals.toggleDebugMenu) - 1
-                ]
+                toggleDebugMenuCD = 100
             for i in range(len(currentMap)):
                 for j in range(len(currentMap[0])):
                     slika = 0
