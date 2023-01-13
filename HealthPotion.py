@@ -2,9 +2,10 @@ import pygame
 from Item import Item
 from globals import Globals
 from globals import Textures
+from consumable import Consumable
 
 
-class HealthPotion(Item):
+class HealthPotion(Consumable):
     healthPot = Textures.healthPotion
     healthPot = pygame.transform.scale(healthPot, (75, 75))
     picture = healthPot

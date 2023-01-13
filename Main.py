@@ -311,6 +311,11 @@ def play():
             if Globals.keys[pygame.K_m]:
                 currentMap = gridMap2
                 firesystem = FireSystem(currentMap)
+            if Globals.keys[pygame.K_F3]:
+                possibles = [0, 1]
+                Globals.toggleDebugMenu = possibles[
+                    possibles.index(Globals.toggleDebugMenu) - 1
+                ]
             for i in range(len(currentMap)):
                 for j in range(len(currentMap[0])):
                     slika = 0

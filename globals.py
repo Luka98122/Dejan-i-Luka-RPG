@@ -3,6 +3,7 @@ import pygame
 
 class Globals:
     sizeofEverything = 50
+    toggleDebugMenu = 0
     portalsPlaced = [0, 0]
     entityList = []
     portalList = [0, 0]

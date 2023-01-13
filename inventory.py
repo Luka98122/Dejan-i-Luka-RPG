@@ -8,6 +8,7 @@ from ArmorChest import ArmorChest
 from ArmorGloves import ArmorGloves
 from ArmorHelmet import ArmorHelmet
 from debugMenu import DebugMenu
+from goldCoin import GoldCoin
 
 dMenu = DebugMenu
 
@@ -47,9 +48,9 @@ class Inventory:
                 self.count[self.unique.index(type(item[0]))] += 1
 
     def drawNumber(self, window, number, pos):
-        myIndex = number - 1
         multiplier = 5
         for i in range(len(str(number))):
+            myIndex = int(str(number)[i]) - 1
             info = Globals.numberDimensions[myIndex]
             img = Textures.numbers
             img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
@@ -82,6 +83,10 @@ class Inventory:
         if self.goldCount > 0:
             image = Textures.goldCoin
             itemCount = self.goldCount
+            if type(self.inventory[0][0]) != GoldCoin:
+                self.inventory.insert(0, [GoldCoin(), self.goldCount])
+            else:
+                self.inventory[0] = [GoldCoin(), self.goldCount]
             image = pygame.transform.scale(
                 image, (int(25 * multiplier1), int(25 * multiplier1))
             )
@@ -104,6 +109,8 @@ class Inventory:
             )
         for i in range(len(unique)):
             item = unique[i]
+            if item == GoldCoin:
+                continue
             itemCount = count[i]
             image = item.picture
             bonus = 0
@@ -115,7 +122,7 @@ class Inventory:
             window.blit(
                 image,
                 pygame.Rect(
-                    int(x * multiplier1 + (bonus * multiplier1 + i * 31 * multiplier1)),
+                    int(x * multiplier1 + (bonus * multiplier1 + i * multiplier1)),
                     int(y * multiplier1),
                     int(25 * multiplier1),
                     int(25 * multiplier1),
@@ -125,19 +132,13 @@ class Inventory:
                 window,
                 itemCount + 1,
                 pygame.Vector2(
-                    int(
-                        60 * multiplier1 + (bonus * multiplier1 + i * 31 * multiplier1)
-                    ),
+                    int(60 * multiplier1 + (bonus * multiplier1 + i * multiplier1)),
                     int(61 * multiplier1),
                 ),
             )
         mousePos = pygame.mouse.get_pos()
-        cx = int(
-            (mousePos[0] - self.xOffset * multiplier1) / int(33 * self.multiplier1)
-        )
-        cy = int(
-            (mousePos[1] - self.yOffset * multiplier1) / int(32 * self.multiplier1)
-        )
+        cx = int((mousePos[0] - self.xOffset * multiplier1) / int(33 * 3.50))
+        cy = int((mousePos[1] - self.yOffset * multiplier1) / int(32 * 3.50))
         pygame.draw.rect(
             window,
             pygame.Color("Red"),
@@ -149,9 +150,11 @@ class Inventory:
             ),
         )
         print(cx, cy)
+
         dMenu.Update(dMenu, cx, cy, self.multiplier1, self.multiplier2)
         if self.frame % 20 == 0:
             dMenu.Draw(dMenu)
+
         keys = Globals.keys
         if keys[pygame.K_1]:
             self.multiplier1 -= 0.1

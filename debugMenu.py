@@ -11,6 +11,8 @@ class DebugMenu:
         pass
 
     def Update(self, cx, cy, multiplier1, multiplier2):
+        if Globals.toggleDebugMenu == 0:
+            return
         self.cx = cx
         self.cy = cy
         self.multiplier1 = multiplier1
@@ -18,6 +20,8 @@ class DebugMenu:
         pass
 
     def Draw(self):
+        if Globals.toggleDebugMenu == 0:
+            return
         dialogueSystem.addWindow(
             dialogueSystem,
             pygame.Vector2(100, 200),

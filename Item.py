@@ -4,8 +4,8 @@ from globals import Textures
 
 class Item:
     def __init__(self) -> None:
-        self.uses = 1
         self.type = 0
+        self.shopName = ""
 
     def Update(self):
         pass

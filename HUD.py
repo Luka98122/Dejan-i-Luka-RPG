@@ -1,5 +1,6 @@
 import pygame
 from globals import Textures
+from goldCoin import GoldCoin
 
 
 class Hud:
@@ -32,13 +33,16 @@ class Hud:
         self.window.blit(self.quickUseSlots, (445, 900))
         # self.window.blit(self.quickUseSlots, (490, 525))
         # Draw Items in QuickUseSlots
-        for i in range(len(self.player.inventory)):
+        starter = 0
+        if type(self.player.inventory[0][0]) == GoldCoin:
+            starter = 1
+        for i in range(starter, len(self.player.inventory)):
             if self.player.inventory[i][0].uses > 0:
                 pic = self.player.inventory[i][0].picture
                 pic = pygame.transform.scale(pic, (120, 120))
-                self.window.blit(pic, (475 + i * 130, 900))
+                self.window.blit(pic, (475 + (i - starter) * 130, 900))
             # Only 3 inventory slots, so just break to not draw everything
-            if i == 2:
+            if (i - starter) == 2:
                 break
         # Draw SpellHotbar
         self.window.blit(self.SpellHotbar, (0, 900))
