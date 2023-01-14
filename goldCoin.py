@@ -9,3 +9,4 @@ class GoldCoin(Item):
         super().__init__()
         self.shopName = "Gold Coin"
         self.picture = Textures.goldCoin
+        self.maxStack = 2147483646

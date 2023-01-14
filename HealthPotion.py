@@ -18,6 +18,7 @@ class HealthPotion(Consumable):
         self.uses = 1
         self.heal = heal
         self.type = "consumable"
+        self.maxStack = 10
         if self.heal == 10:
             self.shopName = "Small Health Potion"
         if self.heal == 20:

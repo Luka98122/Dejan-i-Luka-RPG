@@ -10,4 +10,4 @@ class Armor(Item):
         self.enchantments = enchantments
         self.shopName = name
         self.type = "equipment"
-        super().__init__()
+        self.maxStack = 1

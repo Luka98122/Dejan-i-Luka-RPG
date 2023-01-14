@@ -10,6 +10,7 @@ from ArmorHelmet import ArmorHelmet
 from debugMenu import DebugMenu
 from goldCoin import GoldCoin
 from FontSheet import FontSheet
+import copy
 
 dMenu = DebugMenu
 
@@ -20,9 +21,12 @@ class Inventory:
     numbers = Textures.numbers
     frame = 0
     inventory = [
-        [HealthPotion(10), 1],
-        [HealthPotion(20), 1],
-        [HealthPotion(30), 1],
+        [HealthPotion(10)],
+        [HealthPotion(10)],
+        [HealthPotion(30)],
+        [HealthPotion(10)],
+        [HealthPotion(20)],
+        [HealthPotion(30)],
     ]
     charDimensions = Globals.numberDimensions
     multiplier1 = 3.7630662020905923344947735191638
@@ -42,18 +46,47 @@ class Inventory:
         self.count = []
         shopNames = []
         for item in self.inventory:
+            if type(item[0]) == GoldCoin:
+                continue
             if item[0].shopName not in shopNames:
                 shopNames.append(item[0].shopName)
                 self.unique.append(item[0])
-                self.count.append(0)
+                self.count.append(1)
             else:
                 self.count[shopNames.index(item[0].shopName)] += 1
+        for i in range(len(self.count)):
+            if self.count[i] > self.unique[i].maxStack:
+                for j in range(self.count[i] // self.unique[i].maxStack):
+                    newObj = copy.deepcopy(self.unique[i])
+                    self.unique.append(newObj)
+                    self.count.append(self.unique[i].maxStack)
+                newObj = copy.deepcopy(self.unique[i])
+                self.unique.append(newObj)
+                self.count.append(self.count[i] % self.unique[i].maxStack)
+                del self.unique[i]
+                del self.count[i]
+        a = 2
 
     def DisplayProductInfo(self, tilex, tiley, window):
+        if tilex < 0 or tiley < 0:
+            return
         pos = tiley * 10 + tilex
-        if pos < len(self.inventory):
+        bonus = 0
+        didBonus = False
+        if self.goldCount > 0:
+            bonus = 1
+        if pos != 0:
+            pos = pos - bonus
+            didBonus = True
+        if pos < len(self.unique):
+            thingy = self.unique[pos]
             # Get Info
-            name = str(self.inventory[pos][0].shopName)
+            if self.goldCount > 0:
+                if pos == 0 and didBonus == False:
+                    thingy = GoldCoin()
+                elif pos == 0 and didBonus == True:
+                    pos = 1
+            name = str(thingy.shopName)
             height = 100
             width = FontSheet.getLenOfString(name) + 40
             # Prep TextWindow
@@ -73,13 +106,14 @@ class Inventory:
 
     def drawNumber(self, window, number, pos):
         multiplier = 5
+        if len(str(number)) > 1:
+            pos.x = pos.x - len(str(number)) * 10
         for i in range(len(str(number))):
             myIndex = int(str(number)[i]) - 1
             info = Globals.numberDimensions[myIndex]
             img = Textures.numbers
             img = pygame.transform.scale(img, (58 * multiplier, 7 * multiplier))
             pos = pygame.Vector2(pos[0] + i * 10, pos[1])
-
             window.blit(
                 img,
                 pygame.Rect(
@@ -103,7 +137,7 @@ class Inventory:
         unique = self.unique
         x = 43
         y = 46
-        multiplier1 = self.multiplier1
+        multiplier1 = self.multiplier1 + 0.07
         if self.goldCount > 0:
             image = Textures.goldCoin
             itemCount = self.goldCount
@@ -131,24 +165,24 @@ class Inventory:
                     int(61 * multiplier1),
                 ),
             )
+
         for i in range(len(unique)):
             item = unique[i]
             if type(item) == GoldCoin:
                 continue
-            if item.shopName == "Small Health Potion":
-                a = 2
             itemCount = count[i]
             image = item.picture
             bonus = 0
             if self.goldCount > 0:
-                bonus = 31
+                bonus = 30
             image = pygame.transform.scale(
-                image, (int(25 * multiplier1), int(25 * multiplier1))
+                image,
+                (int(25 * multiplier1), int(25 * multiplier1)),
             )
             window.blit(
                 image,
                 pygame.Rect(
-                    int(x * multiplier1 + (i * 30 * multiplier1)),
+                    int(x * multiplier1 + (i * 31 * multiplier1) + bonus * multiplier1),
                     int(y * multiplier1),
                     int(25 * multiplier1),
                     int(25 * multiplier1),
@@ -156,16 +190,19 @@ class Inventory:
             )
             self.drawNumber(
                 window,
-                itemCount + 1,
+                itemCount,
                 pygame.Vector2(
-                    int(60 * multiplier1 + (i * 30 * multiplier1)),
+                    int(
+                        60 * multiplier1 + (i * 30 * multiplier1) + bonus * multiplier1
+                    ),
                     int(61 * multiplier1),
                 ),
             )
+        bonus = 0
         mousePos = pygame.mouse.get_pos()
         cx = int((mousePos[0] - self.xOffset * multiplier1) / int(33 * 3.50))
         cy = int((mousePos[1] - self.yOffset * multiplier1) / int(32 * 3.50))
-        """
+
         pygame.draw.rect(
             window,
             pygame.Color("Red"),
@@ -176,7 +213,7 @@ class Inventory:
                 self.multiplier2 * self.multiplier1,
             ),
         )
-        """
+
         print(cy, cx)
         self.DisplayProductInfo(cx, cy, window)
         dMenu.Update(dMenu, cx, cy, self.multiplier1, self.multiplier2)
@@ -198,7 +235,7 @@ class Inventory:
             self.xOfset += 1
         if keys[pygame.K_7]:
             self.yOffset -= 1
-        if keys[pygame.K_8]:
-            self.yOffset += 1
+        if keys[pygame.K_f]:
+            self.inventory.append([HealthPotion(10)])
 
         self.frame += 1
